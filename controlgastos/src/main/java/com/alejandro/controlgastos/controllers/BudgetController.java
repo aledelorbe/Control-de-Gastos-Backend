@@ -20,25 +20,25 @@ import com.alejandro.controlgastos.services.BudgetService;
 
 import jakarta.validation.Valid;
 
-@RestController
-@RequestMapping("/api")
+@RestController // To create a api rest.
+@RequestMapping("/api/budgets") // To create a base path.
 public class BudgetController {
 
     // To Inject the service dependency
     @Autowired
     private BudgetService service;
 
-    // To create an endpoint that allows invocating the method findAll.
-    @GetMapping("/budgets")
+    // To create an endpoint that allows invocating the method findAll
+    @GetMapping()
     public List<Budget> budgets() {
         return service.findAll();
     }
 
     // To create an endpoint that allows invocating the method save.
     // The annotation called 'RequestBody' allows receiving data of a client
-    @PostMapping("/budget")
+    @PostMapping()
     public ResponseEntity<?> saveBudget(@Valid @RequestBody Budget budget, BindingResult result) {
-        // To handle of obligations of object attributes
+        // To handle the obligations of object attributes
         if( result.hasFieldErrors() ){
             return validation(result);
         } 
@@ -48,14 +48,15 @@ public class BudgetController {
         return ResponseEntity.status(HttpStatus.CREATED).body(newBudget);
     }
 
-    // To create a endpoint that allows deleting all of budgets
-    @DeleteMapping("/budgets")
-    public ResponseEntity<?> deleteAllOfActivity() {
+    // To create a endpoint that allows deleting all of budgets (the only one)
+    // and return response ok
+    @DeleteMapping()
+    public ResponseEntity<?> deleteAllOfBudgets() {
         service.deleteAll();
         return ResponseEntity.ok().build();
     }
 
-    // To send a JSON object with messages about the obligations of object attributes
+    // To send a JSON object with messages about the obligations of each object attribute
     private ResponseEntity<?> validation(BindingResult result) {
         Map<String, String> errors = new HashMap<>();
 
@@ -65,6 +66,4 @@ public class BudgetController {
 
         return ResponseEntity.badRequest().body(errors);
     }
-
-    
 }
