@@ -1,9 +1,13 @@
 package com.alejandro.controlgastos.entities;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
+
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 
 // To specific the name of collection in mongoDb
 // In mongoDb the name of this collection is 'expenses' but in this project 
@@ -15,15 +19,21 @@ public class Expense {
     @Id
     private String id;
 
+    @NotBlank // To obligate to this attribute not to empty or blank values. 
     private String name;
 
+    // To obligate this attribute to contain values ​​equal to or greater than one
+    @Min(1) 
     private int amount;
 
+    @NotBlank // To obligate to this attribute not to empty or blank values. 
     private String category;
 
-    private Date createdAt;
+    @Field(name = "created_at") // To specific the name of this attribute in the db.
+    private LocalDateTime createdAt;
 
-    private Date updateAt;
+    @Field(name = "updated_at") // To specific the name of this attribute in the db.
+    private LocalDateTime updatedAt; 
 
     public Expense() {
     }
@@ -60,20 +70,20 @@ public class Expense {
         this.category = category;
     }
 
-    public Date getCreatedAt() {
+    public LocalDateTime getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(Date createdAt) {
+    public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
 
-    public Date getUpdateAt() {
-        return updateAt;
+    public LocalDateTime getUpdateAt() {
+        return updatedAt;
     }
 
-    public void setUpdateAt(Date updateAt) {
-        this.updateAt = updateAt;
+    public void setUpdateAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
     }
 
     
