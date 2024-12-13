@@ -19,21 +19,26 @@ public class Expense {
     @Id
     private String id;
 
-    @NotBlank // To obligate to this attribute not to empty or blank values. 
+    @NotBlank // To obligate to this attribute not to empty or blank values.
     private String name;
 
     // To obligate this attribute to contain values ​​equal to or greater than one
-    @Min(1) 
+    @Min(1)
     private int amount;
 
-    @NotBlank // To obligate to this attribute not to empty or blank values. 
+    @NotBlank // To obligate to this attribute not to empty or blank values.
     private String category;
 
     @Field("created_at") // To specific the name of this attribute in the db.
     private LocalDateTime createdAt;
 
     @Field("updated_at") // To specific the name of this attribute in the db.
-    private LocalDateTime updatedAt; 
+    private LocalDateTime updatedAt;
+
+    @PreUpdate
+    public void preUpdate() {
+        // n instrucciones
+    }
 
     public Expense() {
     }
@@ -85,7 +90,5 @@ public class Expense {
     public void setUpdateAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
     }
-
-    
 
 }
