@@ -29,10 +29,10 @@ public class Expense {
     @NotBlank // To obligate to this attribute not to empty or blank values. 
     private String category;
 
-    @Field(name = "created_at") // To specific the name of this attribute in the db.
+    @Field("created_at") // To specific the name of this attribute in the db.
     private LocalDateTime createdAt;
 
-    @Field(name = "updated_at") // To specific the name of this attribute in the db.
+    @Field("updated_at") // To specific the name of this attribute in the db.
     private LocalDateTime updatedAt; 
 
     public Expense() {

@@ -12,8 +12,6 @@ public interface ExpenseService {
 
     public List<Expense> findAll();
 
-    public Optional<Expense> findById(String id);
-    
     public Expense save(Expense expense);
 
     public Optional<Expense> update(String id, Expense expense);

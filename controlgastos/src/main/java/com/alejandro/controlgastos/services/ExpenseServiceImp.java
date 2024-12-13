@@ -4,11 +4,13 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.alejandro.controlgastos.entities.Expense;
 import com.alejandro.controlgastos.repositories.ExpenseRepository;
 
+@Service
 public class ExpenseServiceImp implements ExpenseService {
 
     // To inject the repository dependency.
@@ -20,13 +22,6 @@ public class ExpenseServiceImp implements ExpenseService {
     @Transactional(readOnly = true)
     public List<Expense> findAll() {
         return repository.findAll();
-    }
-
-    // To get a specific expense based on its id
-    @Override
-    @Transactional
-    public Optional<Expense> findById(String id) {
-        return repository.findById(id);
     }
 
     // To save a new expense in the db
