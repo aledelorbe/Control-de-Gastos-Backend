@@ -35,11 +35,6 @@ public class Expense {
     @Field("updated_at") // To specific the name of this attribute in the db.
     private LocalDateTime updatedAt;
 
-    @PreUpdate
-    public void preUpdate() {
-        // n instrucciones
-    }
-
     public Expense() {
     }
 

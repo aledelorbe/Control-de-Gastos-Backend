@@ -47,7 +47,7 @@ public class ExpenseServiceImp implements ExpenseService {
             expenseDb.setAmount(expense.getAmount());
             expenseDb.setCategory(expense.getCategory());
             // The attribute: createdAt doesnt update.
-            // The attribute: updatedAt is updated in 
+            // The attribute: updatedAt is updated in the 'expenseEvent' file.
 
             return Optional.ofNullable(repository.save(expenseDb));
         }
