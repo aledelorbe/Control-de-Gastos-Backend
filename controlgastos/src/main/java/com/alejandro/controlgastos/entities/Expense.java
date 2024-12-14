@@ -8,6 +8,7 @@ import org.springframework.data.mongodb.core.mapping.Field;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.PastOrPresent;
 
 // To specific the name of collection in mongoDb
 // In mongoDb the name of this collection is 'expenses' but in this project 
@@ -30,6 +31,7 @@ public class Expense {
     private String category;
 
     @Field("created_at") // To specific the name of this attribute in the db.
+    @PastOrPresent // To obligate the date to be before today or today
     private LocalDateTime createdAt;
 
     @Field("updated_at") // To specific the name of this attribute in the db.
