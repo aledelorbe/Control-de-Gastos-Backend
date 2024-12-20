@@ -35,7 +35,7 @@ public class ExpenseServiceImp implements ExpenseService {
     @Override
     @Transactional
     public Optional<Expense> update(String id, Expense expense) {
-        // Find a specific expense
+        // Search for a specific expense
         Optional<Expense> optionalExpense = repository.findById(id);
 
         // If the expense is present then...
@@ -59,7 +59,7 @@ public class ExpenseServiceImp implements ExpenseService {
     @Override
     @Transactional
     public Optional<Expense> deleteById(String id) {
-        // Find a specific expense
+        // Search for a specific expense
         Optional<Expense> optionalExpense = repository.findById(id);
 
         // If the expense is present then delete that expense

@@ -1,0 +1,208 @@
+{
+	"info": {
+		"_postman_id": "8269ee27-37bc-4402-aa20-d468e5c32201",
+		"name": "expense control",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "15966177"
+	},
+	"item": [
+		{
+			"name": "budgets",
+			"item": [
+				{
+					"name": "budgets",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8081/api/budgets",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"api",
+								"budgets"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "budget",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"amount\": 900\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8081/api/budgets",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"api",
+								"budgets"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "budgets",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8081/api/budgets",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"api",
+								"budgets"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "expenses",
+			"item": [
+				{
+					"name": "expenses",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8081/api/expenses",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"api",
+								"expenses"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "expense",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Spotify\",\r\n    \"amount\": 300,\r\n    \"category\": \"Suscripcion\",\r\n    \"createdAt\": \"2024-12-14T21:47:03\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8081/api/expenses",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"api",
+								"expenses"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "expense",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8081/api/expenses",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"api",
+								"expenses"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "expenses",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8081/api/expenses",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"api",
+								"expenses"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "expense",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Disney\",\r\n    \"amount\": 100,\r\n    \"category\": \"Suscripcion\",\r\n    \"createdAt\": \"2024-12-12T21:47:03\",\r\n    \"updateAt\": null\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8081/api/expenses/675cc263dea2b406517f4955",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"api",
+								"expenses",
+								"675cc263dea2b406517f4955"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

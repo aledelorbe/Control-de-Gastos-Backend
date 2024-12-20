@@ -5,12 +5,13 @@ Control de Gastos es un backend construido con **Spring Boot** y **MongoDB**, di
 ## Tecnologías Utilizadas
 
 - **Spring Boot**: Framework para construir aplicaciones Java. Particularmente en este proyecto se utiliza la versión `3.4.0`.
+  - **Jakarta Validation**: Validación de datos de entrada.
+  - **Eventos de ciclo de vida**: Se crea una clase que extiende de la clase `AbstractMongoEventListener`, la cual permite manejar acciones antes o después de realizar alguna de las operaciones CRUD sobre los objetos de la clase `Expense`.
 - **Java**: Lenguaje de programación principal. Para este proyecto en específico se utilizó el `JDK 17`.
 - **Maven**: Para la gestión de dependencias y construcción del proyecto.
-- **Jakarta Validation**: Validación de datos de entrada.
 - **MongoDB**: Base de datos NoSQL para almacenar las actividades.
 - **Postman**: Para simular ser un cliente que hace peticiones al servidor y probar los endpoints.
-- **Eventos de ciclo de vida**: Se crea una clase que extiende de la clase `AbstractMongoEventListener`, la cual permite manejar acciones antes o después de realizar alguna de las operaciones CRUD sobre los objetos de la clase `Expense`.
+
 
 ## Características 
 
@@ -57,14 +58,14 @@ Expense Control is a backend built with **Spring Boot** and **MongoDB**, designe
 ## Technologies Used
 
 - **Spring Boot**: A framework for building Java applications. In this project, version `3.4.0` is used.
+  - **Jakarta Validation**: For input data validation.
+  - **Lifecycle Events**: A class extending `AbstractMongoEventListener` is created to handle actions before or after performing CRUD operations on `Expense` objects.
 - **Java**: The primary programming language. For this project, `JDK 17` was used.
 - **Maven**: For dependency management and project build.
-- **Jakarta Validation**: For input data validation.
 - **MongoDB**: NoSQL database used to store activities.
 - **Postman**: Used to simulate a client making server requests and to test the endpoints.
-- **Lifecycle Events**: A class extending `AbstractMongoEventListener` is created to handle actions before or after performing CRUD operations on `Expense` objects.
 
-## Features 
+## Features
 
 - REST API with organized routes to interact with the user's expenses and budget. Supported operations:
   - Get the budget.
@@ -99,4 +100,3 @@ Expense Control is a backend built with **Spring Boot** and **MongoDB**, designe
 You can see a demo of the project at the following link: [Expense Control](https://serene-frangollo-9ddb20.netlify.app/).
 
 **Note:** The project demo is for demonstration purposes only. It is not linked to the backend.
-
