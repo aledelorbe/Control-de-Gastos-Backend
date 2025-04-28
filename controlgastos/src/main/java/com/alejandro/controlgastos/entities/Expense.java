@@ -40,6 +40,15 @@ public class Expense {
     public Expense() {
     }
 
+    public Expense(String id, @NotBlank String name, @Min(1) int amount, @NotBlank String category,
+            @PastOrPresent LocalDateTime createdAt) {
+        this.id = id;
+        this.name = name;
+        this.amount = amount;
+        this.category = category;
+        this.createdAt = createdAt;
+    }
+
     public String getId() {
         return id;
     }
