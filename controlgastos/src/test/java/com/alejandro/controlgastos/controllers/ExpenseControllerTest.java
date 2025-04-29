@@ -24,7 +24,7 @@ import org.springframework.test.web.servlet.MvcResult;
 
 import com.alejandro.controlgastos.TestConfig;
 import com.alejandro.controlgastos.data.CustomCondition;
-import com.alejandro.controlgastos.data.Data;
+import com.alejandro.controlgastos.data.ExpenseData;
 import com.alejandro.controlgastos.entities.Expense;
 import com.alejandro.controlgastos.services.ExpenseService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -49,7 +49,7 @@ class ExpenseControllerTest {
     void testGetExpenses () throws Exception {
 
         // Given
-        when(service.findAll()).thenReturn(Data.createExpenses001());
+        when(service.findAll()).thenReturn(ExpenseData.createExpenses001());
 
         // When
         MvcResult result = mockMvc.perform(get("/api/expenses"))
@@ -147,7 +147,7 @@ class ExpenseControllerTest {
         assertEquals("Salud", newExpense.getCategory());
         assertEquals(LocalDateTime.of(2025, 4, 28, 18, 15), newExpense.getCreatedAt());
 
-        verify(service).update(argThat(new CustomCondition(Data.idsValid, true)), any(Expense.class));
+        verify(service).update(argThat(new CustomCondition(ExpenseData.idsValid, true)), any(Expense.class));
     }
 
     // To test the enpoint update when we use an inexisting id 
@@ -169,7 +169,7 @@ class ExpenseControllerTest {
             .andExpect(content().string(""))
             ;
 
-        verify(service).update(argThat(new CustomCondition(Data.idsValid, false)), any(Expense.class));
+        verify(service).update(argThat(new CustomCondition(ExpenseData.idsValid, false)), any(Expense.class));
     }
 
     // To test the enpoint delete when we use an existing id 
@@ -178,7 +178,7 @@ class ExpenseControllerTest {
     
         // Given
         String idToDelete = "0000001";
-        when(service.deleteById(anyString())).thenReturn(Optional.of(Data.createExpense001()));
+        when(service.deleteById(anyString())).thenReturn(Optional.of(ExpenseData.createExpense001()));
 
         // When
         MvcResult result = mockMvc.perform(delete("/api/expenses/" + idToDelete))
@@ -201,7 +201,7 @@ class ExpenseControllerTest {
         assertEquals("Suscripciones", newExpense.getCategory());
         assertEquals(LocalDateTime.of(2025, 4, 25, 14, 30), newExpense.getCreatedAt());
 
-        verify(service).deleteById(argThat(new CustomCondition(Data.idsValid, true)));
+        verify(service).deleteById(argThat(new CustomCondition(ExpenseData.idsValid, true)));
     }
 
     // To test the enpoint delete when we use an inexisting id 
@@ -220,7 +220,7 @@ class ExpenseControllerTest {
             .andExpect(content().string(""))
             ;
 
-        verify(service).deleteById(argThat(new CustomCondition(Data.idsValid, false)));
+        verify(service).deleteById(argThat(new CustomCondition(ExpenseData.idsValid, false)));
     }
 
     // To test the enpoint deleteAll

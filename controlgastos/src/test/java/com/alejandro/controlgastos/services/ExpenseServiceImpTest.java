@@ -20,7 +20,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.alejandro.controlgastos.entities.Expense;
 import com.alejandro.controlgastos.repositories.ExpenseRepository;
 import com.alejandro.controlgastos.data.CustomCondition;
-import com.alejandro.controlgastos.data.Data;
+import com.alejandro.controlgastos.data.ExpenseData;
 
 @ExtendWith(MockitoExtension.class)
 class ExpenseServiceImpTest {
@@ -38,7 +38,7 @@ class ExpenseServiceImpTest {
     void findAllTest() {
 
         // Given
-        when(repository.findAll()).thenReturn(Data.createExpenses001());
+        when(repository.findAll()).thenReturn(ExpenseData.createExpenses001());
 
         // when
         List<Expense> expenses = service.findAll();
@@ -81,7 +81,7 @@ class ExpenseServiceImpTest {
         // Given
         String idToUpdate = "0000001";
         Expense expenseToUpdate = new Expense(idToUpdate, "HBO Max", 500, "Suscripciones", LocalDateTime.now());
-        when(repository.findById(anyString())).thenReturn(Optional.of(Data.createExpense001()));
+        when(repository.findById(anyString())).thenReturn(Optional.of(ExpenseData.createExpense001()));
         when(repository.save(any(Expense.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         // When
@@ -94,7 +94,7 @@ class ExpenseServiceImpTest {
         assertEquals("Suscripciones", result.get().getCategory());
         // The event is not possible to test. It might only be with an integration test.
 
-        verify(repository).findById(argThat(new CustomCondition(Data.idsValid, true)));
+        verify(repository).findById(argThat(new CustomCondition(ExpenseData.idsValid, true)));
         verify(repository).save(any(Expense.class));
     }
 
@@ -115,7 +115,7 @@ class ExpenseServiceImpTest {
             result2.orElseThrow();
         });
 
-        verify(repository).findById(argThat(new CustomCondition(Data.idsValid, false)));
+        verify(repository).findById(argThat(new CustomCondition(ExpenseData.idsValid, false)));
         verify(repository, never()).save(any(Expense.class));
     }
 
@@ -125,7 +125,7 @@ class ExpenseServiceImpTest {
 
         // Given
         String idToDelete = "0000001";
-        when(repository.findById(anyString())).thenReturn(Optional.of(Data.createExpense001()));
+        when(repository.findById(anyString())).thenReturn(Optional.of(ExpenseData.createExpense001()));
 
         // When
         Optional<Expense> result = service.deleteById(idToDelete);
@@ -137,8 +137,8 @@ class ExpenseServiceImpTest {
         assertEquals("Suscripciones", result.get().getCategory());
         assertEquals(LocalDateTime.of(2025, 4, 25, 14, 30), result.get().getCreatedAt());
 
-        verify(repository).findById(argThat(new CustomCondition(Data.idsValid, true)));
-        verify(repository).deleteById(argThat(new CustomCondition(Data.idsValid, true)));
+        verify(repository).findById(argThat(new CustomCondition(ExpenseData.idsValid, true)));
+        verify(repository).deleteById(argThat(new CustomCondition(ExpenseData.idsValid, true)));
     }
 
     // To test the metod delete when we use an inexisting id
@@ -158,8 +158,8 @@ class ExpenseServiceImpTest {
             result.orElseThrow();
         });
 
-        verify(repository).findById(argThat(new CustomCondition(Data.idsValid, false)));
-        verify(repository, never()).deleteById(argThat(new CustomCondition(Data.idsValid, false)));
+        verify(repository).findById(argThat(new CustomCondition(ExpenseData.idsValid, false)));
+        verify(repository, never()).deleteById(argThat(new CustomCondition(ExpenseData.idsValid, false)));
     }
 
     // To test the metod deleteAll

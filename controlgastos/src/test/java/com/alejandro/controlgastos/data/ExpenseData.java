@@ -6,8 +6,8 @@ import java.util.List;
 
 import com.alejandro.controlgastos.entities.Expense;
 
-// The class that contains the data to be mocked in the service methods
-public class Data {
+// The class that contains the data to be mocked in the service and controller methods
+public class ExpenseData {
     
     public static final List<String> idsValid = Arrays.asList("0000001", "0000002", "0000003", "0000004");
 
@@ -30,4 +30,5 @@ public class Data {
     public static List<Expense> createExpenses001() {
         return Arrays.asList(createExpense001(), createExpense002(), createExpense003(), createExpense004());
     }
+
 }

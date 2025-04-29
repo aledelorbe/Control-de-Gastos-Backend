@@ -23,6 +23,11 @@ public class Budget {
     public Budget() {
     }
 
+    public Budget(String id, @Min(500) int amount) {
+        this.id = id;
+        this.amount = amount;
+    }
+
     public String getId() {
         return id;
     }
