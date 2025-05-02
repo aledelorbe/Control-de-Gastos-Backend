@@ -16,7 +16,7 @@ public class ExpenseData {
     }
     
     public static Expense createExpense002() {
-        return new Expense(idsValid.get(1), "Pizza", 100, "Diversión", LocalDateTime.of(20253, 3, 15, 12, 20));
+        return new Expense(idsValid.get(1), "Pizza", 100, "Diversión", LocalDateTime.of(2023, 3, 15, 12, 20));
     }
 
     public static Expense createExpense003() {

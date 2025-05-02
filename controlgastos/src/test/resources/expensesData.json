@@ -1,0 +1,31 @@
+[
+    {
+        "id": "1000000",
+        "name": "Netflix",
+        "amount": 400,
+        "category": "Suscripciones",
+        "createdAt": "2025-04-25T14:30:00"
+    },
+    {
+        "id": "2000000",
+        "name": "Pizza",
+        "amount": 100,
+        "category": "Diversión",
+        "createdAt": "2025-03-15T12:20:00"
+    },
+    {
+        "id": "3000000",
+        "name": "Doctor",
+        "amount": 110,
+        "category": "Salud",
+        "createdAt": "2022-02-10T08:10:00"
+    },
+    {
+        "id": "4000000",
+        "name": "Pintura",
+        "amount": 950,
+        "category": "Casa",
+        "createdAt": "2021-01-07T07:00:00"
+    }
+]
+  

@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-ControlgastosApplication<controlgastos>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.alejandro.controlgastos.ControlgastosApplication",
+            "projectName": "controlgastos",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}

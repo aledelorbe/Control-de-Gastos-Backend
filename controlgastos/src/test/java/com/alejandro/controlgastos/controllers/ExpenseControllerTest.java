@@ -44,7 +44,7 @@ class ExpenseControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    // To test the enpoint getExpenses
+    // To test the endpoint getExpenses
     @Test
     void testGetExpenses () throws Exception {
 
@@ -81,7 +81,7 @@ class ExpenseControllerTest {
         verify(service).findAll();
     } 
 
-    // To test the enpoint post
+    // To test the endpoint save
     @Test
     void testPostSave() throws Exception {
 
@@ -115,7 +115,7 @@ class ExpenseControllerTest {
         verify(service).save(any(Expense.class));
     }
 
-    // To test the enpoint update when we use an existing id 
+    // To test the endpoint update when we use an existing id 
     @Test
     void testPutUpdateExistingId() throws Exception {
     
@@ -150,7 +150,7 @@ class ExpenseControllerTest {
         verify(service).update(argThat(new CustomCondition(ExpenseData.idsValid, true)), any(Expense.class));
     }
 
-    // To test the enpoint update when we use an inexisting id 
+    // To test the endpoint update when we use an inexisting id 
     @Test
     void testPutUpdateInexistingId() throws Exception {
     
@@ -172,7 +172,7 @@ class ExpenseControllerTest {
         verify(service).update(argThat(new CustomCondition(ExpenseData.idsValid, false)), any(Expense.class));
     }
 
-    // To test the enpoint delete when we use an existing id 
+    // To test the endpoint delete when we use an existing id 
     @Test
     void testDeleteExistingId() throws Exception {
     
@@ -204,7 +204,7 @@ class ExpenseControllerTest {
         verify(service).deleteById(argThat(new CustomCondition(ExpenseData.idsValid, true)));
     }
 
-    // To test the enpoint delete when we use an inexisting id 
+    // To test the endpoint delete when we use an inexisting id 
     @Test
     void testDeleteInexistingId() throws Exception {
     
@@ -223,7 +223,7 @@ class ExpenseControllerTest {
         verify(service).deleteById(argThat(new CustomCondition(ExpenseData.idsValid, false)));
     }
 
-    // To test the enpoint deleteAll
+    // To test the endpoint deleteAll
     @Test
     void testDeleteAll() throws Exception {
     
