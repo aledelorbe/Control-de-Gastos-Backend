@@ -84,7 +84,7 @@ class ExpenseIntegrationTest {
     void postExpenseIntegrationTest() {
 
         // Given
-        Expense expenseInsert = new Expense(null, "Frappe", 50, "Diversión", LocalDateTime.of(2025, 4, 28, 18, 15));
+        Expense expenseInsert = new Expense(null, " Frappe ", 50, "Diversión", LocalDateTime.of(2025, 4, 28, 18, 15));
 
         // When
         ResponseEntity<Expense> response = client.postForEntity("/api/expenses", expenseInsert, Expense.class);
@@ -105,7 +105,7 @@ class ExpenseIntegrationTest {
 
         // Given
         String idToUpdate = "2000000";
-        Expense expenseToUpdate = new Expense(null, "veterinario", 250, "Salud", LocalDateTime.of(2025, 4, 28, 18, 15));
+        Expense expenseToUpdate = new Expense(null, " veterinario ", 250, "Salud", LocalDateTime.of(2025, 4, 28, 18, 15));
         
         // When
         HttpEntity<Expense> request = new HttpEntity<>(expenseToUpdate);

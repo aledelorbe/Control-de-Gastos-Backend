@@ -17,14 +17,19 @@ public class ExpenseEvent extends AbstractMongoEventListener<Expense> {
     public void onBeforeConvert(BeforeConvertEvent<Expense> event) {
         Expense currentExpense = event.getSource(); // get the object that is firing the event.
 
+        // It's a update operation
         if (currentExpense.getId() != null) {
-            // It's a update operation
 
+            // Remove the blank in the next attributes and set the date in the 'updateAt' attribute
+            currentExpense.setName(currentExpense.getName().trim());
             currentExpense.setUpdateAt(LocalDateTime.now()); 
-        } else {
-            // It's a create operation
+        } 
+        // It's a create operation
+        else {
 
-            // In this case, do it nothing
+            // In this case, only remove the blanks in the next attributes
+            currentExpense.setName(currentExpense.getName().trim());
         }
     }
+    
 }

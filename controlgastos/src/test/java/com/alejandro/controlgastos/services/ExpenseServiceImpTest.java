@@ -33,7 +33,7 @@ class ExpenseServiceImpTest {
     @InjectMocks
     ExpenseServiceImp service;
 
-    // To test the metod findAll
+    // To test the method findAll
     @Test
     void findAllTest() {
 
@@ -54,7 +54,7 @@ class ExpenseServiceImpTest {
         verify(repository).findAll();
     }
 
-    // To test the metod save
+    // To test the method save
     @Test
     void saveTest() {
 
@@ -74,7 +74,7 @@ class ExpenseServiceImpTest {
         verify(repository).save(any(Expense.class));
     }
 
-    // To test the metod update when we use an existing id
+    // To test the method update when we use an existing id
     @Test
     void updateExistingIdTest() {
 
@@ -98,7 +98,7 @@ class ExpenseServiceImpTest {
         verify(repository).save(any(Expense.class));
     }
 
-    // To test the metod update when we use an inexisting id
+    // To test the method update when we use an inexisting id
     @Test
     void updateInexistingIdTest() {
 
@@ -119,7 +119,7 @@ class ExpenseServiceImpTest {
         verify(repository, never()).save(any(Expense.class));
     }
 
-    // To test the metod delete when we use an existing id
+    // To test the method delete when we use an existing id
     @Test
     void deleteExistingIdTest() {
 
@@ -141,7 +141,7 @@ class ExpenseServiceImpTest {
         verify(repository).deleteById(argThat(new CustomCondition(ExpenseData.idsValid, true)));
     }
 
-    // To test the metod delete when we use an inexisting id
+    // To test the method delete when we use an inexisting id
     @Test
     void deleteInexistingIdTest() {
 
@@ -162,7 +162,7 @@ class ExpenseServiceImpTest {
         verify(repository, never()).deleteById(argThat(new CustomCondition(ExpenseData.idsValid, false)));
     }
 
-    // To test the metod deleteAll
+    // To test the method deleteAll
     @Test
     void deleteAllTest() {
 

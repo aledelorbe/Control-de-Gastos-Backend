@@ -46,7 +46,7 @@ class ExpenseControllerTest {
 
     // To test the endpoint getExpenses
     @Test
-    void testGetExpenses () throws Exception {
+    void getExpensesTest() throws Exception {
 
         // Given
         when(service.findAll()).thenReturn(ExpenseData.createExpenses001());
@@ -83,7 +83,7 @@ class ExpenseControllerTest {
 
     // To test the endpoint save
     @Test
-    void testPostSave() throws Exception {
+    void postSaveTest() throws Exception {
 
         // Given
         Expense expenseInsert = new Expense(null, "Frappe", 50, "Diversión", LocalDateTime.of(2025, 4, 28, 18, 15));
@@ -117,7 +117,7 @@ class ExpenseControllerTest {
 
     // To test the endpoint update when we use an existing id 
     @Test
-    void testPutUpdateExistingId() throws Exception {
+    void putUpdateExistingIdTest() throws Exception {
     
         // Given
         String idToUpdate = "0000002";
@@ -152,7 +152,7 @@ class ExpenseControllerTest {
 
     // To test the endpoint update when we use an inexisting id 
     @Test
-    void testPutUpdateInexistingId() throws Exception {
+    void putUpdateInexistingIdTest() throws Exception {
     
         // Given
         String idToUpdate = "0000008";
@@ -174,7 +174,7 @@ class ExpenseControllerTest {
 
     // To test the endpoint delete when we use an existing id 
     @Test
-    void testDeleteExistingId() throws Exception {
+    void deleteExistingIdTest() throws Exception {
     
         // Given
         String idToDelete = "0000001";
@@ -206,7 +206,7 @@ class ExpenseControllerTest {
 
     // To test the endpoint delete when we use an inexisting id 
     @Test
-    void testDeleteInexistingId() throws Exception {
+    void deleteInexistingIdTest() throws Exception {
     
         // Given
         String idToDelete = "0000009";
@@ -225,7 +225,7 @@ class ExpenseControllerTest {
 
     // To test the endpoint deleteAll
     @Test
-    void testDeleteAll() throws Exception {
+    void deleteAllTest() throws Exception {
     
         // When
         mockMvc.perform(delete("/api/expenses"))
@@ -240,7 +240,7 @@ class ExpenseControllerTest {
 
     // To test the method validation
     @Test
-    void testValidation() throws Exception {
+    void validationTest() throws Exception {
 
         // Given
         Expense expenseInsert = new Expense(null, "", -26, "", LocalDateTime.of(2050, 4, 28, 18, 15));

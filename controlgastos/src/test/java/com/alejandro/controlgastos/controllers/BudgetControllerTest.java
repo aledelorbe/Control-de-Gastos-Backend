@@ -39,9 +39,9 @@ class BudgetControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    // To test the enpoint getBudgets
+    // To test the endpoint getBudgets
     @Test
-    void testGetBudgets () throws Exception {
+    void getBudgetsTest () throws Exception {
 
         // Given
         when(service.findAll()).thenReturn(BudgetData.createBudgets001());
@@ -70,9 +70,9 @@ class BudgetControllerTest {
         verify(service).findAll();
     } 
 
-    // To test the enpoint post
+    // To test the endpoint post
     @Test
-    void testPostSave() throws Exception {
+    void postSaveTest() throws Exception {
 
         // Given
         Budget budgetInsert = new Budget(null, 50000);
@@ -98,9 +98,9 @@ class BudgetControllerTest {
         verify(service).save(any(Budget.class));
     }
 
-    // To test the enpoint deleteAll
+    // To test the endpoint deleteAll
     @Test
-    void testDeleteAll() throws Exception {
+    void deleteAllTest() throws Exception {
     
         // When
         mockMvc.perform(delete("/api/budgets"))
@@ -115,7 +115,7 @@ class BudgetControllerTest {
 
     // To test the method validation
     @Test
-    void testValidation() throws Exception {
+    void validationTest() throws Exception {
 
         // Given
         Budget budgetInsert = new Budget(null, 40);

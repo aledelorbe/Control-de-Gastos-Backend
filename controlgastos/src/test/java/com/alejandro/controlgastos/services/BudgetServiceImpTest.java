@@ -27,7 +27,7 @@ public class BudgetServiceImpTest {
     @InjectMocks
     BudgetServiceImp service;
 
-    // To test the metod findAll
+    // To test the method findAll
     @Test
     void findAllTest() {
 
@@ -46,7 +46,7 @@ public class BudgetServiceImpTest {
         verify(repository).findAll();
     }
 
-    // To test the metod save
+    // To test the method save
     @Test
     void saveTest() {
 
@@ -63,7 +63,7 @@ public class BudgetServiceImpTest {
         verify(repository).save(any(Budget.class));
     }
 
-    // To test the metod deleteAll
+    // To test the method deleteAll
     @Test
     void deleteAllTest() {
 
