@@ -66,3 +66,213 @@ paths:
         '200':
           description: The budget deleted successfully
 
+  /api/expenses:
+    get:
+      tags:
+        - Expenses
+      summary: Get all expenses
+      description: Returns a list of all stored expenses.
+      responses:
+        '200':
+          description: List of expenses
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Expense'
+
+    post:
+      tags:
+        - Expenses
+      summary: Create an expense
+      description: Creates a new expense if the sent data is valid.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExpenseInput'
+      responses:
+        '201':
+          description: Expense successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Expense'
+        '400':
+          description: Validation errors
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExpenseValidationErrors'
+
+    delete:
+      tags:
+        - Expenses
+      summary: Delete all expenses
+      description: Delete all expenses of the records.
+      responses:
+        '200':
+          description: The budgets were deleted successfully
+
+  /api/expenses/{id}:
+    put:
+      tags:
+        - Expenses
+      summary: Update an expense
+      description: Updates all values of an existing expense by its ID.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: ID of the expense to update
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExpenseUpdate'
+      responses:
+        '201':
+          description: Expense updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Expense'
+        '400':
+          description: Validation errors
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExpenseValidationUpdateErrors'
+        '404':
+          description: Expense not found
+
+    delete:
+      tags:
+        - Expenses
+      summary: Delete an expense
+      description: Deletes a specific expense using its ID.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: ID of the expense to delete
+      responses:
+        '200':
+          description: Expense deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Expense'
+        '404':
+          description: Expense not found
+
+components:
+  schemas:
+    Budget:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "65ab12df703e4cbb23a45ed9"
+        amount:
+          type: number
+          format: double
+          example: 4500.00
+
+    BudgetInput:
+      type: object
+      properties:
+        amount:
+          type: number
+          format: double
+          example: 4500.00
+
+    BudgetValidationErrors:
+      allOf:
+        - $ref: "#/components/schemas/ValidationErrorsBase"
+      example:
+        amount: "The field amount must be equal to or greater than 500"
+
+    Expense:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "65ab12df703e4cbb23a45ed9"
+        name:
+          type: string
+          example: "Grocery Shopping"
+        amount:
+          type: number
+          format: double
+          example: 350.75
+        category:
+          type: string
+          example: "Food"
+        createdAt:
+          type: datetime
+          example: "2025-11-14T10:24:03.465"
+        updateAt:
+          type: datetime
+          example: "2025-11-15T19:40:01.210"
+
+    ExpenseUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+          example: "HBO MAX"
+        amount:
+          type: number
+          format: double
+          example: 150.25
+        category:
+          type: string
+          example: "Subscriptions"
+
+    ExpenseInput:
+      type: object
+      properties:
+        name:
+          type: string
+          example: "Grocery Shopping"
+        amount:
+          type: number
+          format: double
+          example: 350.75
+        category:
+          type: string
+          example: "Food"
+        createdAt:
+          type: datetime
+          example: "2025-11-14T10:24:03.465"
+
+    ValidationErrorsBase:
+      type: object
+      description: Base validation error schema.
+      additionalProperties:
+        type: string
+
+    ExpenseValidationErrors:
+      allOf:
+        - $ref: "#/components/schemas/ValidationErrorsBase"
+      example:
+        amount: "The amount field must be >= 1"
+        name: "The name field must not be empty"
+        category: "The category field must not be empty"
+        createdAt: "The createdAt field is required"
+
+    ExpenseValidationUpdateErrors:
+      allOf:
+        - $ref: "#/components/schemas/ValidationErrorsBase"
+      example:
+        amount: "The amount field must be >= 1"
+        name: "The name field must not be empty"
+        category: "The category field must not be empty"
