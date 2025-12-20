@@ -17,7 +17,7 @@ public class ExpenseEvent extends AbstractMongoEventListener<Expense> {
     public void onBeforeConvert(BeforeConvertEvent<Expense> event) {
         Expense currentExpense = event.getSource(); // get the object that is firing the event.
 
-        // It's a update operation
+        // It's an update operation
         if (currentExpense.getId() != null) {
 
             // Remove the blank in the next attributes and set the date in the 'updateAt' attribute

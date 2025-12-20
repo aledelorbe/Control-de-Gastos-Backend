@@ -5,8 +5,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import jakarta.validation.constraints.Min;
 
-// To specific the name of collection in mongoDb
-// In mongoDb the name of this collection is 'budgets' but in this project 
+// In mongoDb the name of this collection is 'budgets' but in this project
 // the name of this class is 'Budget'
 @Document(collection = "budgets")
 public class Budget {
@@ -15,9 +14,9 @@ public class Budget {
     @Id
     private String id;
     
-    // To obligate this attribute to contain values ​​equal to or greater than five hundread
+    // To obligate this attribute to contain values ​​equal to or greater than five hundred
     // This values is arbitrary.
-    @Min(500) 
+    @Min(value = 500, message = "{Min.Budget.amount}")
     private int amount;
 
     public Budget() {

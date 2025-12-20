@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import com.alejandro.controlgastos.dtos.ExpenseUpdateDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +25,7 @@ import com.alejandro.controlgastos.services.ExpenseService;
 import jakarta.validation.Valid;
 
 
-@RestController // To create a api rest.
+@RestController // To create an api rest.
 @RequestMapping("/api/expenses") // To create a base path.
 public class ExpenseController {
 
@@ -52,9 +53,9 @@ public class ExpenseController {
         return ResponseEntity.status(HttpStatus.CREATED).body(newExpense);
     }
 
-    // To create an endpoint that allows update all of atributte values a specific expense based its id.
+    // To create an endpoint that allows update all attribute values a specific expense based its id.
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateExpense(@Valid @RequestBody Expense expense, BindingResult result, @PathVariable String id) {
+    public ResponseEntity<?> updateExpense(@Valid @RequestBody ExpenseUpdateDTO expense, BindingResult result, @PathVariable String id) {
         // To handle the obligations of object attributes
         if( result.hasFieldErrors() ){
             return validation(result);
@@ -82,7 +83,7 @@ public class ExpenseController {
         return ResponseEntity.notFound().build();
     }
 
-    // To create a endpoint that allows deleting all of expenses
+    // To create an endpoint that allows deleting all expenses
     // and return response ok
     @DeleteMapping()
     public ResponseEntity<?> deleteAllOfExpenses() {
@@ -95,7 +96,7 @@ public class ExpenseController {
         Map<String, String> errors = new HashMap<>();
 
         result.getFieldErrors().forEach(e -> {
-            errors.put(e.getField(), "El campo " + e.getField() + " " + e.getDefaultMessage());
+            errors.put(e.getField(), e.getDefaultMessage());
         });
 
         return ResponseEntity.badRequest().body(errors);

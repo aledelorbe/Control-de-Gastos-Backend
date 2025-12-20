@@ -16,7 +16,7 @@ public class BudgetServiceImp implements BudgetService {
     @Autowired
     private BudgetRepository repository;
 
-    // To list all of budgets (records) in the collection 'budgets'.
+    // To list all budgets (records) in the collection 'budgets'.
     // There will be only one
     @Override
     @Transactional(readOnly = true)

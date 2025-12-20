@@ -8,9 +8,10 @@ public interface BudgetService {
 
     // Declaration of methods to use in 'serviceImp' file
     
-    public List<Budget> findAll();
+    List<Budget> findAll();
     
-    public Budget save(Budget budget);
+    Budget save(Budget budget);
 
-    public void deleteAll();
+    void deleteAll();
+
 }
