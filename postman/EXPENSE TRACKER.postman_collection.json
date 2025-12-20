@@ -1,9 +1,10 @@
 {
 	"info": {
-		"_postman_id": "8269ee27-37bc-4402-aa20-d468e5c32201",
-		"name": "expense control",
+		"_postman_id": "350ccdfa-f00c-4323-b895-8adb44453a14",
+		"name": "EXPENSE TRACKER",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "15966177"
+		"_exporter_id": "46944597",
+		"_collection_link": "https://telecoms-administrator-82446008-2957368.postman.co/workspace/MARTIN-ALEJANDRO-GRANADOS-BELLO~137692b1-9ef0-4fcb-840f-2d010a35161a/collection/46944597-350ccdfa-f00c-4323-b895-8adb44453a14?action=share&source=collection_link&creator=46944597"
 	},
 	"item": [
 		{
@@ -15,12 +16,10 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8081/api/budgets",
-							"protocol": "http",
+							"raw": "{{LOCAL_DOCKER}}/api/budgets",
 							"host": [
-								"localhost"
+								"{{LOCAL_DOCKER}}"
 							],
-							"port": "8081",
 							"path": [
 								"api",
 								"budgets"
@@ -44,12 +43,10 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8081/api/budgets",
-							"protocol": "http",
+							"raw": "{{LOCAL_DOCKER}}/api/budgets",
 							"host": [
-								"localhost"
+								"{{LOCAL_DOCKER}}"
 							],
-							"port": "8081",
 							"path": [
 								"api",
 								"budgets"
@@ -64,12 +61,10 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8081/api/budgets",
-							"protocol": "http",
+							"raw": "{{LOCAL_DOCKER}}/api/budgets",
 							"host": [
-								"localhost"
+								"{{LOCAL_DOCKER}}"
 							],
-							"port": "8081",
 							"path": [
 								"api",
 								"budgets"
@@ -89,12 +84,10 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8081/api/expenses",
-							"protocol": "http",
+							"raw": "{{LOCAL_DOCKER}}/api/expenses",
 							"host": [
-								"localhost"
+								"{{LOCAL_DOCKER}}"
 							],
-							"port": "8081",
 							"path": [
 								"api",
 								"expenses"
@@ -118,52 +111,10 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8081/api/expenses",
-							"protocol": "http",
+							"raw": "{{LOCAL_DOCKER}}/api/expenses",
 							"host": [
-								"localhost"
+								"{{LOCAL_DOCKER}}"
 							],
-							"port": "8081",
-							"path": [
-								"api",
-								"expenses"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "expense",
-					"request": {
-						"method": "DELETE",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:8081/api/expenses",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8081",
-							"path": [
-								"api",
-								"expenses"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "expenses",
-					"request": {
-						"method": "DELETE",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:8081/api/expenses",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8081",
 							"path": [
 								"api",
 								"expenses"
@@ -179,7 +130,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"name\": \"Disney\",\r\n    \"amount\": 100,\r\n    \"category\": \"Suscripcion\",\r\n    \"createdAt\": \"2024-12-12T21:47:03\",\r\n    \"updateAt\": null\r\n}",
+							"raw": "{\r\n    \"name\": \"Disney\",\r\n    \"amount\": 100,\r\n    \"category\": \"Suscripcion\",\r\n    \"createdAt\": \"2024-12-12T21:47:03\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -187,16 +138,51 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8081/api/expenses/675cc263dea2b406517f4955",
-							"protocol": "http",
+							"raw": "{{LOCAL_DOCKER}}/api/expenses/691de90c2bb2604bc6308555",
 							"host": [
-								"localhost"
+								"{{LOCAL_DOCKER}}"
 							],
-							"port": "8081",
 							"path": [
 								"api",
 								"expenses",
-								"675cc263dea2b406517f4955"
+								"691de90c2bb2604bc6308555"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "expense",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{LOCAL_DOCKER}}/api/expenses/691de4062bb2604bc6308553",
+							"host": [
+								"{{LOCAL_DOCKER}}"
+							],
+							"path": [
+								"api",
+								"expenses",
+								"691de4062bb2604bc6308553"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "expenses",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{LOCAL_DOCKER}}/api/expenses",
+							"host": [
+								"{{LOCAL_DOCKER}}"
+							],
+							"path": [
+								"api",
+								"expenses"
 							]
 						}
 					},
