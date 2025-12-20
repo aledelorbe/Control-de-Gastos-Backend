@@ -14,6 +14,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import com.alejandro.controlgastos.dtos.ExpenseUpdateDTO;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -29,6 +30,7 @@ import com.alejandro.controlgastos.entities.Expense;
 import com.alejandro.controlgastos.services.ExpenseService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+
 @WebMvcTest(ExpenseController.class)
 @Import(TestConfig.class)
 class ExpenseControllerTest {
@@ -36,13 +38,16 @@ class ExpenseControllerTest {
     // To inject the dependency that allows for mocking HTTP requests
     @Autowired
     private MockMvc mockMvc;
- 
+
     // To inject the dependency that represents the service to mock
     @Autowired
-    private ExpenseService service; 
+    private ExpenseService service;
 
     @Autowired
     private ObjectMapper objectMapper;
+
+    private static final String BASE_URL = "/api/expenses";
+
 
     // To test the endpoint getExpenses
     @Test
@@ -52,7 +57,7 @@ class ExpenseControllerTest {
         when(service.findAll()).thenReturn(ExpenseData.createExpenses001());
 
         // When
-        MvcResult result = mockMvc.perform(get("/api/expenses"))
+        MvcResult result = mockMvc.perform(get(BASE_URL))
 
         // Then
         .andExpect(status().isOk())
@@ -90,7 +95,7 @@ class ExpenseControllerTest {
         when(service.save(any(Expense.class))).thenAnswer(invocation -> invocation.getArgument(0));
         
         // when
-        MvcResult result = mockMvc.perform(post("/api/expenses")
+        MvcResult result = mockMvc.perform(post(BASE_URL)
             .contentType(MediaType.APPLICATION_JSON)
             .content(objectMapper.writeValueAsString(expenseInsert)))
 
@@ -121,13 +126,14 @@ class ExpenseControllerTest {
     
         // Given
         String idToUpdate = "0000002";
-        Expense expenseToUpdate = new Expense(null, "veterinario", 250, "Salud", LocalDateTime.of(2025, 4, 28, 18, 15));
-        when(service.update(anyString(), any(Expense.class))).thenAnswer(invocation -> Optional.of(invocation.getArgument(1)));
+        ExpenseUpdateDTO exponseUpdate = new ExpenseUpdateDTO("veterinario", 250, "Salud");
+        Expense exponseResponse = new Expense(null, "veterinario", 250, "Salud", LocalDateTime.of(2025, 4, 28, 18, 15));
+        when(service.update(anyString(), any(ExpenseUpdateDTO.class))).thenReturn(Optional.of(exponseResponse));
 
         // When
         MvcResult result = mockMvc.perform(put("/api/expenses/" + idToUpdate)
             .contentType(MediaType.APPLICATION_JSON)
-            .content(objectMapper.writeValueAsString(expenseToUpdate)))
+            .content(objectMapper.writeValueAsString(exponseUpdate)))
 
         // then
             .andExpect(status().isCreated())
@@ -147,7 +153,7 @@ class ExpenseControllerTest {
         assertEquals("Salud", newExpense.getCategory());
         assertEquals(LocalDateTime.of(2025, 4, 28, 18, 15), newExpense.getCreatedAt());
 
-        verify(service).update(argThat(new CustomCondition(ExpenseData.idsValid, true)), any(Expense.class));
+        verify(service).update(argThat(new CustomCondition(ExpenseData.idsValid, true)), any(ExpenseUpdateDTO.class));
     }
 
     // To test the endpoint update when we use an inexisting id 
@@ -156,20 +162,20 @@ class ExpenseControllerTest {
     
         // Given
         String idToUpdate = "0000008";
-        Expense expenseToUpdate = new Expense(null, "veterinario", 250, "Salud", LocalDateTime.of(2025, 4, 28, 18, 15));
-        when(service.update(anyString(), any(Expense.class))).thenReturn(Optional.empty());
+        ExpenseUpdateDTO exponseUpdate = new ExpenseUpdateDTO("veterinario", 250, "Salud");
+        when(service.update(anyString(), any(ExpenseUpdateDTO.class))).thenReturn(Optional.empty());
 
         // When
         mockMvc.perform(put("/api/expenses/" + idToUpdate)
             .contentType(MediaType.APPLICATION_JSON)
-            .content(objectMapper.writeValueAsString(expenseToUpdate)))
+            .content(objectMapper.writeValueAsString(exponseUpdate)))
 
         // then
             .andExpect(status().isNotFound())
             .andExpect(content().string(""))
             ;
 
-        verify(service).update(argThat(new CustomCondition(ExpenseData.idsValid, false)), any(Expense.class));
+        verify(service).update(argThat(new CustomCondition(ExpenseData.idsValid, false)), any(ExpenseUpdateDTO.class));
     }
 
     // To test the endpoint delete when we use an existing id 
@@ -204,7 +210,7 @@ class ExpenseControllerTest {
         verify(service).deleteById(argThat(new CustomCondition(ExpenseData.idsValid, true)));
     }
 
-    // To test the endpoint delete when we use an inexisting id 
+    // To test the endpoint delete when we use an unexisting id
     @Test
     void deleteInexistingIdTest() throws Exception {
     
@@ -228,7 +234,7 @@ class ExpenseControllerTest {
     void deleteAllTest() throws Exception {
     
         // When
-        mockMvc.perform(delete("/api/expenses"))
+        mockMvc.perform(delete(BASE_URL))
 
         // then
             .andExpect(status().isOk())
@@ -246,16 +252,16 @@ class ExpenseControllerTest {
         Expense expenseInsert = new Expense(null, "", -26, "", LocalDateTime.of(2050, 4, 28, 18, 15));
         
         // when
-        mockMvc.perform(post("/api/expenses")
+        mockMvc.perform(post(BASE_URL)
             .contentType(MediaType.APPLICATION_JSON)
             .content(objectMapper.writeValueAsString(expenseInsert)))
         
         // then
             .andExpect(status().isBadRequest())
-            .andExpect(jsonPath("$.name").value("El campo name must not be blank"))
-            .andExpect(jsonPath("$.amount").value("El campo amount must be greater than or equal to 1"))
-            .andExpect(jsonPath("$.category").value("El campo category must not be blank"))
-            .andExpect(jsonPath("$.createdAt").value("El campo createdAt must be a date in the past or in the present"))
+            .andExpect(jsonPath("$.name").value("The name field must not be null, empty, or contain only whitespace"))
+            .andExpect(jsonPath("$.amount").value("The amount field must be equal to or greater than 1"))
+            .andExpect(jsonPath("$.category").value("The category field must not be null, empty, or contain only whitespace"))
+            .andExpect(jsonPath("$.createdAt").value("The createdAt field must be a date in the past or present"))
             ;
 
         verify(service, never()).save(any(Expense.class));

@@ -43,6 +43,9 @@ class ExpenseIntegrationTest {
     @Autowired
     private ObjectMapper objectMapper;
 
+    private static final String BASE_URL = "/api/expenses";
+
+
     // To load the data
     @BeforeEach
     void setUp() throws IOException {
@@ -64,7 +67,7 @@ class ExpenseIntegrationTest {
     void getExpensesIntegrationTest() {
 
         // When
-        ResponseEntity<Expense[]> response  = client.getForEntity("/api/expenses", Expense[].class);
+        ResponseEntity<Expense[]> response  = client.getForEntity(BASE_URL, Expense[].class);
         List<Expense> expenses = Arrays.asList(response.getBody()); 
 
         // Then
@@ -87,7 +90,7 @@ class ExpenseIntegrationTest {
         Expense expenseInsert = new Expense(null, " Frappe ", 50, "Diversión", LocalDateTime.of(2025, 4, 28, 18, 15));
 
         // When
-        ResponseEntity<Expense> response = client.postForEntity("/api/expenses", expenseInsert, Expense.class);
+        ResponseEntity<Expense> response = client.postForEntity(BASE_URL, expenseInsert, Expense.class);
         Expense newExpense = response.getBody();
 
         // Then
@@ -124,9 +127,9 @@ class ExpenseIntegrationTest {
 
     }
 
-    // To test the endpoint update when we use an inexisting id 
+    // To test the endpoint update when we use an unexisting id
     @Test
-    void putUpdateInexistingIdIntegrationTest()  {
+    void putUpdateUnexistingIdIntegrationTest()  {
 
         // Given
         String idToUpdate = "999999";
@@ -163,7 +166,7 @@ class ExpenseIntegrationTest {
         assertEquals(LocalDateTime.of(2022, 2, 10, 8, 10), expenseDelete.getCreatedAt());
 
         // When
-        ResponseEntity<Expense[]> response2  = client.getForEntity("/api/expenses", Expense[].class);
+        ResponseEntity<Expense[]> response2  = client.getForEntity(BASE_URL, Expense[].class);
         List<Expense> expenses = Arrays.asList(response2.getBody()); 
 
         // Then
@@ -173,9 +176,9 @@ class ExpenseIntegrationTest {
         
     }
 
-    // To test the endpoint delete when we use an inexisting id 
+    // To test the endpoint delete when we use an unexisting id
     @Test
-    void deleteInexistingIdIntegrationTest() {
+    void deleteUnexistingIdIntegrationTest() {
     
         // Given
         String idToDelete = "999999";
@@ -194,14 +197,14 @@ class ExpenseIntegrationTest {
     void deleteAllIntegrationTest() {
 
         // When
-        ResponseEntity<?> response = client.exchange("/api/expenses", HttpMethod.DELETE, null, Void.class);
+        ResponseEntity<?> response = client.exchange(BASE_URL, HttpMethod.DELETE, null, Void.class);
 
         // Then
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNull(response.getBody());
 
         // When
-        ResponseEntity<Expense[]> response2  = client.getForEntity("/api/expenses", Expense[].class);
+        ResponseEntity<Expense[]> response2  = client.getForEntity(BASE_URL, Expense[].class);
         List<Expense> expenses = Arrays.asList(response2.getBody()); 
 
         // Then

@@ -28,6 +28,6 @@ public class CustomCondition implements ArgumentMatcher<String> {
     public String toString() {
         return matchIfInSet 
             ? "You used the value: " + argument + " but You must use an existing id" 
-            : "You used the value: " + argument + " but You must use an inexisting id";
+            : "You used the value: " + argument + " but You must use an unexisting id";
     }
 }

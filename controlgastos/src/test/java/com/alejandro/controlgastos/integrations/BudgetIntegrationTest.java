@@ -37,7 +37,10 @@ class BudgetIntegrationTest {
 
     @Autowired
     private ObjectMapper objectMapper;
-    
+
+    private static final String BASE_URL = "/api/budgets";
+
+
     // To load the data
     @BeforeEach
     void setUp() throws IOException {
@@ -59,7 +62,7 @@ class BudgetIntegrationTest {
     void getBudgetsIntegrationTest() {
 
         // When
-        ResponseEntity<Budget[]> response  = client.getForEntity("/api/budgets", Budget[].class);
+        ResponseEntity<Budget[]> response  = client.getForEntity(BASE_URL, Budget[].class);
         List<Budget> budgets = Arrays.asList(response.getBody()); 
 
         // Then
@@ -79,7 +82,7 @@ class BudgetIntegrationTest {
         Budget budgetInsert = new Budget(null, 50000);
 
         // When
-        ResponseEntity<Budget> response = client.postForEntity("/api/budgets", budgetInsert, Budget.class);
+        ResponseEntity<Budget> response = client.postForEntity(BASE_URL, budgetInsert, Budget.class);
         Budget newBudget = response.getBody();
 
         // Then
@@ -93,14 +96,14 @@ class BudgetIntegrationTest {
     void deleteAllIntegrationTest() {
 
         // When
-        ResponseEntity<?> response = client.exchange("/api/budgets", HttpMethod.DELETE, null, Void.class);
+        ResponseEntity<?> response = client.exchange(BASE_URL, HttpMethod.DELETE, null, Void.class);
 
         // Then
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNull(response.getBody());
 
         // When
-        ResponseEntity<Budget[]> response2  = client.getForEntity("/api/budgets", Budget[].class);
+        ResponseEntity<Budget[]> response2  = client.getForEntity(BASE_URL, Budget[].class);
         List<Budget> budgets = Arrays.asList(response2.getBody()); 
 
         // Then

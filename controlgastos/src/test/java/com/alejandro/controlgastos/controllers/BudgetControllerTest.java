@@ -24,6 +24,7 @@ import com.alejandro.controlgastos.entities.Budget;
 import com.alejandro.controlgastos.services.BudgetService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+
 @WebMvcTest(BudgetController.class)
 @Import(TestConfig.class) 
 class BudgetControllerTest {
@@ -39,6 +40,9 @@ class BudgetControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
+    private static final String BASE_URL = "/api/budgets";
+
+
     // To test the endpoint getBudgets
     @Test
     void getBudgetsTest () throws Exception {
@@ -47,7 +51,7 @@ class BudgetControllerTest {
         when(service.findAll()).thenReturn(BudgetData.createBudgets001());
 
         // When
-        MvcResult result = mockMvc.perform(get("/api/budgets"))
+        MvcResult result = mockMvc.perform(get(BASE_URL))
 
         // Then
             .andExpect(status().isOk())
@@ -79,7 +83,7 @@ class BudgetControllerTest {
         when(service.save(any(Budget.class))).thenAnswer(invocation -> invocation.getArgument(0));
         
         // when
-        MvcResult result = mockMvc.perform(post("/api/budgets")
+        MvcResult result = mockMvc.perform(post(BASE_URL)
             .contentType(MediaType.APPLICATION_JSON)
             .content(objectMapper.writeValueAsString(budgetInsert)))
 
@@ -103,7 +107,7 @@ class BudgetControllerTest {
     void deleteAllTest() throws Exception {
     
         // When
-        mockMvc.perform(delete("/api/budgets"))
+        mockMvc.perform(delete(BASE_URL))
 
         // then
             .andExpect(status().isOk())
@@ -121,13 +125,13 @@ class BudgetControllerTest {
         Budget budgetInsert = new Budget(null, 40);
         
         // when
-        mockMvc.perform(post("/api/budgets")
+        mockMvc.perform(post(BASE_URL)
             .contentType(MediaType.APPLICATION_JSON)
             .content(objectMapper.writeValueAsString(budgetInsert)))
         
         // then
             .andExpect(status().isBadRequest())
-            .andExpect(jsonPath("$.amount").value("El campo amount must be greater than or equal to 500"))
+            .andExpect(jsonPath("$.amount").value("The amount field must be equal to or greater than 500"))
             ;
 
         verify(service, never()).save(any(Budget.class));

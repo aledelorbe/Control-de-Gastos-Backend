@@ -24,7 +24,7 @@ public class ExpenseData {
     }
 
     public static Expense createExpense004() {
-        return new Expense(idsValid.get(3), "Pintura", 950, "Casa", LocalDateTime.of(2021, 1, 07, 07, 00));
+        return new Expense(idsValid.get(3), "Pintura", 950, "Casa", LocalDateTime.of(2021, 1, 7, 7, 0));
     }
 
     public static List<Expense> createExpenses001() {
