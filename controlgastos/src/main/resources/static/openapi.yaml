@@ -1,0 +1,68 @@
+openapi: 3.0.3
+
+info:
+  title: Expense tracker API
+  description: API for managing budgets and expenses.
+  version: v1.0.0
+  contact:
+    name: Alejandro Granados
+    email: alejandro.magb@gmail.com
+    url: https://github.com/aledelorbe
+
+tags:
+  - name: Budgets
+    description: Endpoints related to budget management.
+  - name: Expenses
+    description: Endpoints related to expense management.
+
+paths:
+  /api/budgets:
+    get:
+      tags:
+        - Budgets
+      summary: Get the budget
+      description: Returns the budget.
+      responses:
+        '200':
+          description: Show the budget
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Budget'
+
+    post:
+      tags:
+        - Budgets
+      summary: Create a budget
+      description: Creates a new budget if the sent data is valid.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BudgetInput'
+      responses:
+        '201':
+          description: Budget successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Budget'
+        '400':
+          description: Validation errors
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BudgetValidationErrors'
+
+    delete:
+      tags:
+        - Budgets
+      summary: Delete the budget
+      description: Removes the budget record
+      responses:
+        '200':
+          description: The budget deleted successfully
+
