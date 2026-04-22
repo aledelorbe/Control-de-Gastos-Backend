@@ -94,8 +94,8 @@ Puedes ver una demo del proyecto en el siguiente enlace: [Control de Gastos](htt
 - Desarrollar el servicio de catalogos de categoria de gastos.
 - Desarrollar las pruebas para este servicio.
 - Incorporar este servicio al swagger.
+- Meterle redis + circuit breaker.
 - Crear el perfil dev para conectarse con mongoDb atlas.
-- Quizas meterle redis y el patron de diseño `Cache-aside pattern` para que se quede en cache el catalogo.
 - Actualizar el readme.
 - Despliegue de la aplicacion en AWS.
 - Despligue automatico usando jenkins.
