@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.alejandro.controlgastos.entities.ExpenseCategory;
-import com.alejandro.controlgastos.services.ExpenseCategoryService;
+import com.alejandro.controlgastos.services.cache.ExpenseCategoryCacheService;
 
 
 @RestController // To create an api rest.
@@ -18,13 +18,13 @@ public class ExpenseCategoryController {
 
     // To Inject the service dependency
     @Autowired
-    private ExpenseCategoryService expenseCategoryService;
+    private ExpenseCategoryCacheService expenseCategoryCacheService;
 
 
     // To create an endpoint that allows invocating the getExpenseCategories method
     @GetMapping()
     public List<ExpenseCategory> expenseCategories() {
-        return expenseCategoryService.getExpenseCategories();
+        return expenseCategoryCacheService.getExpenseCategories();
     }
 
 }

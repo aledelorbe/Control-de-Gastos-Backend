@@ -10,6 +10,6 @@ public interface ExpenseCategoryService {
 
     // Declaration of methods to use in 'serviceImp' file
 
-    List<ExpenseCategory> getExpenseCategories();
+    List<ExpenseCategory> getExpenseCategoriesFromDb();
 
 }

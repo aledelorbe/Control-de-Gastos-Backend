@@ -22,7 +22,7 @@ public class ExpenseCategoryServiceImp implements ExpenseCategoryService {
     // To list all expense categories (records) in the collection 'expenseCategories'.
     @Override
     @Transactional(readOnly = true)
-    public List<ExpenseCategory> getExpenseCategories() {
+    public List<ExpenseCategory> getExpenseCategoriesFromDb() {
         return expenseCategoryRepository.findAll();
     }
 
