@@ -11,7 +11,35 @@ services:
       dockerfile: ./Dockerfile
     env_file: .\.env
     depends_on:
-      - expense-tracker-db
+      expense-tracker-db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+
+  redis:
+    image: redis:7.4-alpine
+    container_name: ${LOCAL_DK_REDIS_CONTAINER_NAME}
+    restart: unless-stopped
+    ports:
+      - "${LOCAL_DK_REDIS_PORT}:6379"
+    networks:
+      - expense-network
+    command: >
+      redis-server
+      --appendonly yes
+      --requirepass ${LOCAL_DK_REDIS_PASSWORD}
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "redis-cli",
+          "-a",
+          "${LOCAL_DK_REDIS_PASSWORD}",
+          "ping"
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   expense-tracker-db:
     container_name: ${LOCAL_DK_HOST_NAME}
@@ -22,6 +50,11 @@ services:
     image: mongodb/mongodb-community-server:7.0-ubi8
     volumes:
       - expense-volume:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
 networks:
   expense-network:
