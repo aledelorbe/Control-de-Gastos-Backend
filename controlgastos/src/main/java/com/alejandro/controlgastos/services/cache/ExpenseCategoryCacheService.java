@@ -4,6 +4,7 @@ package com.alejandro.controlgastos.services.cache;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.alejandro.controlgastos.entities.ExpenseCategory;
 import com.alejandro.controlgastos.repositories.RedisCacheRepository;
@@ -11,6 +12,7 @@ import com.alejandro.controlgastos.services.ExpenseCategoryService;
 import com.fasterxml.jackson.core.type.TypeReference;
 
 
+@Service
 public class ExpenseCategoryCacheService {
     
     @Autowired
