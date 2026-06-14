@@ -1,5 +1,6 @@
 package com.alejandro.controlgastos.controllers;
 
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,6 +21,7 @@ import com.alejandro.controlgastos.services.BudgetService;
 
 import jakarta.validation.Valid;
 
+
 @RestController // To create an api rest.
 @RequestMapping("/api/budgets") // To create a base path.
 public class BudgetController {
@@ -28,13 +30,14 @@ public class BudgetController {
     @Autowired
     private BudgetService service;
 
-    // To create an endpoint that allows invocating the method findAll
+
+    // To create an endpoint that allows invocating the findAll method
     @GetMapping()
     public List<Budget> budgets() {
         return service.findAll();
     }
 
-    // To create an endpoint that allows invocating the method save.
+    // To create an endpoint that allows invocating the save method.
     // The annotation called 'RequestBody' allows receiving data of a client
     @PostMapping()
     public ResponseEntity<?> saveBudget(@Valid @RequestBody Budget budget, BindingResult result) {
@@ -51,7 +54,7 @@ public class BudgetController {
     // To create an endpoint that allows deleting all budgets (the only one)
     // and return response ok
     @DeleteMapping()
-    public ResponseEntity<?> deleteAllOfBudgets() {
+    public ResponseEntity<?> deleteAllBudgets() {
         service.deleteAll();
         return ResponseEntity.ok().build();
     }

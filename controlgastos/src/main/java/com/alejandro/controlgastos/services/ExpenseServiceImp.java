@@ -1,5 +1,6 @@
 package com.alejandro.controlgastos.services;
 
+
 import java.util.List;
 import java.util.Optional;
 
@@ -11,12 +12,14 @@ import org.springframework.transaction.annotation.Transactional;
 import com.alejandro.controlgastos.entities.Expense;
 import com.alejandro.controlgastos.repositories.ExpenseRepository;
 
+
 @Service
 public class ExpenseServiceImp implements ExpenseService {
 
     // To inject the repository dependency.
     @Autowired
     private ExpenseRepository repository;
+
 
     // To list all expenses (records) in the collection 'expenses'.
     @Override
@@ -71,7 +74,7 @@ public class ExpenseServiceImp implements ExpenseService {
         return optionalExpense;
     }
 
-    // To delete all of expenses
+    // To delete all expenses
     @Override
     @Transactional
     public void deleteAll() {

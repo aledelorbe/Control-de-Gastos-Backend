@@ -1,5 +1,6 @@
 package com.alejandro.controlgastos.controllers;
 
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,13 +34,14 @@ public class ExpenseController {
     @Autowired
     private ExpenseService service;
 
-    // To create an endpoint that allows invocating the method findAll
+    
+    // To create an endpoint that allows invocating the findAll method
     @GetMapping()
     public List<Expense> expenses() {
         return service.findAll();
     }
 
-    // To create an endpoint that allows invocating the method save.
+    // To create an endpoint that allows invocating the save method.
     // The annotation called 'RequestBody' allows receiving data of a client
     @PostMapping()
     public ResponseEntity<?> saveExpense(@Valid @RequestBody Expense expense, BindingResult result) {
@@ -86,7 +88,7 @@ public class ExpenseController {
     // To create an endpoint that allows deleting all expenses
     // and return response ok
     @DeleteMapping()
-    public ResponseEntity<?> deleteAllOfExpenses() {
+    public ResponseEntity<?> deleteAllExpenses() {
         service.deleteAll();
         return ResponseEntity.ok().build();
     }
