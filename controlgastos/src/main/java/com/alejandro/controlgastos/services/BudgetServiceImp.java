@@ -1,5 +1,6 @@
 package com.alejandro.controlgastos.services;
 
+
 import java.util.List;
 import java.util.Optional;
 
@@ -9,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.alejandro.controlgastos.entities.Budget;
 import com.alejandro.controlgastos.repositories.BudgetRepository;
+
 
 @Service
 public class BudgetServiceImp implements BudgetService {
@@ -46,7 +48,7 @@ public class BudgetServiceImp implements BudgetService {
             Budget budgetDb = optionalBudget.get();
 
             budgetDb.setAmount(budget.getAmount());
-            
+
             return Optional.ofNullable(repository.save(budgetDb));
         }
 
