@@ -14,8 +14,13 @@ tags:
     description: Endpoints related to budget management.
   - name: Expenses
     description: Endpoints related to expense management.
+  - name: Catalogs
+    description: Endpoints related to catalogs
 
 paths:
+
+  # Budget controller -----------------------------
+
   /api/budgets:
     get:
       tags:
@@ -57,6 +62,31 @@ paths:
               schema:
                 $ref: '#/components/schemas/BudgetValidationErrors'
 
+    put:
+      tags:
+        - Budgets
+      summary: Update a budget
+      description: Updates a budget if the sent data is valid.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BudgetInput'
+      responses:
+        '201':
+          description: Budget successfully updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Budget'
+        '400':
+          description: Validation errors
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BudgetValidationErrors'
+     
     delete:
       tags:
         - Budgets
@@ -65,6 +95,8 @@ paths:
       responses:
         '200':
           description: The budget deleted successfully
+
+  # Expense controller -----------------------------
 
   /api/expenses:
     get:
@@ -173,6 +205,23 @@ paths:
         '404':
           description: Expense not found
 
+  # Catalogs controller -----------------------------
+  /api/expense-categories:
+    get:
+      tags:
+        - Catalogs
+      summary: Get all expense categories
+      description: Returns a list of expense categories.
+      responses:
+        '200':
+          description: List of expense categories successfully.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ExpenseCategory'
+
 components:
   schemas:
     Budget:
@@ -217,10 +266,10 @@ components:
           type: string
           example: "Food"
         createdAt:
-          type: datetime
+          type: string
           example: "2025-11-14T10:24:03.465"
         updateAt:
-          type: datetime
+          type: string
           example: "2025-11-15T19:40:01.210"
 
     ExpenseUpdate:
@@ -251,7 +300,7 @@ components:
           type: string
           example: "Food"
         createdAt:
-          type: datetime
+          type: string
           example: "2025-11-14T10:24:03.465"
 
     ValidationErrorsBase:
@@ -276,3 +325,15 @@ components:
         amount: "The amount field must be >= 1"
         name: "The name field must not be empty"
         category: "The category field must not be empty"
+
+    ExpenseCategory:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier of the expense category.
+          example: "22349823049234kjasidjfmioanuioner3"
+        category_name:
+          type: string
+          description: Expense category name (e.g., healthy, food, home, etc.).
+          example: "home"
