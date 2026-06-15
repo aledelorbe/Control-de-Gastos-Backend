@@ -1,7 +1,10 @@
 package com.alejandro.controlgastos.controllers;
 
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -9,6 +12,7 @@ import static org.hamcrest.Matchers.*;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +24,7 @@ import org.springframework.test.web.servlet.MvcResult;
 
 import com.alejandro.controlgastos.TestConfig;
 import com.alejandro.controlgastos.data.BudgetData;
+import com.alejandro.controlgastos.data.CustomCondition;
 import com.alejandro.controlgastos.entities.Budget;
 import com.alejandro.controlgastos.services.BudgetService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -42,8 +47,10 @@ class BudgetControllerTest {
 
     private static final String BASE_URL = "/api/budgets";
 
+    private static final String PUT_DELETE_URL = BASE_URL + "/";
 
-    // To test the endpoint getBudgets
+
+    // To test the getBudgets endpoint
     @Test
     void getBudgetsTest () throws Exception {
 
@@ -74,7 +81,7 @@ class BudgetControllerTest {
         verify(service).findAll();
     } 
 
-    // To test the endpoint post
+    // To test the save endpoint
     @Test
     void postSaveTest() throws Exception {
 
@@ -102,7 +109,58 @@ class BudgetControllerTest {
         verify(service).save(any(Budget.class));
     }
 
-    // To test the endpoint deleteAll
+    // To test the update endpoint when we use an existing id 
+    @Test
+    void putUpdateExistingIdTest() throws Exception {
+    
+        // Given
+        String idToUpdate = "0000001";
+        Budget budgetToUpdate = new Budget(null, 600);
+        when(service.update(anyString(), any(Budget.class))).thenAnswer(invocation -> Optional.of(invocation.getArgument(1)));
+
+        // When
+        MvcResult result = mockMvc.perform(put(PUT_DELETE_URL + idToUpdate)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(budgetToUpdate)))
+
+        // then
+            .andExpect(status().isCreated())
+            .andExpect(jsonPath("$.amount").value(600))
+            .andReturn()
+        ;
+
+        // Convert the response to an object
+        String jsonString = result.getResponse().getContentAsString();
+        Budget newBudget = objectMapper.readValue(jsonString, Budget.class);
+
+        assertEquals(600, newBudget.getAmount());
+
+        verify(service).update(argThat(new CustomCondition(BudgetData.idsValid, true)), any(Budget.class));
+    }
+
+    // To test the update endpoint when we use an inexisting id 
+    @Test
+    void putUpdateInexistingIdTest() throws Exception {
+    
+        // Given
+        String idToUpdate = "9999999";
+        Budget budgetToUpdate = new Budget(null, 600);
+        when(service.update(anyString(), any(Budget.class))).thenReturn(Optional.empty());
+
+        // When
+        mockMvc.perform(put(PUT_DELETE_URL + idToUpdate)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(budgetToUpdate)))
+
+        // then
+            .andExpect(status().isNotFound())
+            .andExpect(content().string(""))
+        ;
+
+        verify(service).update(argThat(new CustomCondition(BudgetData.idsValid, false)), any(Budget.class));
+    }
+
+    // To test the deleteAll endpoint
     @Test
     void deleteAllTest() throws Exception {
     
@@ -117,7 +175,7 @@ class BudgetControllerTest {
         verify(service).deleteAll();
     }
 
-    // To test the method validation
+    // To test the validation method
     @Test
     void validationTest() throws Exception {
 
