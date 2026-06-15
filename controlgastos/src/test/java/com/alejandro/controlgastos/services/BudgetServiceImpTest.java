@@ -1,10 +1,15 @@
 package com.alejandro.controlgastos.services;
 
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.*;
 
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,8 +18,10 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.alejandro.controlgastos.data.BudgetData;
+import com.alejandro.controlgastos.data.CustomCondition;
 import com.alejandro.controlgastos.entities.Budget;
 import com.alejandro.controlgastos.repositories.BudgetRepository;
+
 
 @ExtendWith(MockitoExtension.class)
 public class BudgetServiceImpTest {
@@ -27,7 +34,8 @@ public class BudgetServiceImpTest {
     @InjectMocks
     BudgetServiceImp service;
 
-    // To test the method findAll
+
+    // To test the findAll method
     @Test
     void findAllTest() {
 
@@ -46,7 +54,7 @@ public class BudgetServiceImpTest {
         verify(repository).findAll();
     }
 
-    // To test the method save
+    // To test the save method
     @Test
     void saveTest() {
 
@@ -63,7 +71,49 @@ public class BudgetServiceImpTest {
         verify(repository).save(any(Budget.class));
     }
 
-    // To test the method deleteAll
+    // To test the update method when we use an existing id
+    @Test
+    void updateExistingIdTest() {
+
+        // Given
+        String idToUpdate = "0000001";
+        Budget budgetToUpdate = new Budget(null, 950);
+        when(repository.findById(anyString())).thenReturn(Optional.of(BudgetData.createBudget001()));
+        when(repository.save(any(Budget.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        // When
+        Optional<Budget> result = service.update(idToUpdate, budgetToUpdate);
+
+        // Then
+        assertTrue(result.isPresent());
+        assertEquals(950, result.get().getAmount());
+
+        verify(repository).findById(argThat(new CustomCondition(BudgetData.idsValid, true)));
+        verify(repository).save(any(Budget.class));
+    }
+
+    // To test the update method when we use an inexisting id
+    @Test
+    void updateInexistingIdTest() {
+
+        String idToUpdate = "99999";
+        Budget budgetToUpdate = new Budget(null, 950);
+        when(repository.findById(anyString())).thenReturn(Optional.empty());
+
+        // When
+        Optional<Budget> result2 = service.update(idToUpdate, budgetToUpdate);
+
+        // Then
+        assertFalse(result2.isPresent());
+        assertThrows(NoSuchElementException.class, () -> {
+            result2.orElseThrow();
+        });
+
+        verify(repository).findById(argThat(new CustomCondition(BudgetData.idsValid, false)));
+        verify(repository, never()).save(any(Budget.class));
+    }
+
+    // To test the deleteAll method
     @Test
     void deleteAllTest() {
 
