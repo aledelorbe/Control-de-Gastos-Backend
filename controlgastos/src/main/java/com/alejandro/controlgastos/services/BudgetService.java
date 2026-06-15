@@ -1,8 +1,11 @@
 package com.alejandro.controlgastos.services;
 
+
 import java.util.List;
+import java.util.Optional;
 
 import com.alejandro.controlgastos.entities.Budget;
+
 
 public interface BudgetService {
 
@@ -11,6 +14,8 @@ public interface BudgetService {
     List<Budget> findAll();
     
     Budget save(Budget budget);
+
+    Optional<Budget> update(String id, Budget budget);
 
     void deleteAll();
 

@@ -1,6 +1,7 @@
 package com.alejandro.controlgastos.services;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,6 +17,7 @@ public class BudgetServiceImp implements BudgetService {
     @Autowired
     private BudgetRepository repository;
 
+
     // To list all budgets (records) in the collection 'budgets'.
     // There will be only one
     @Override
@@ -29,6 +31,26 @@ public class BudgetServiceImp implements BudgetService {
     @Transactional
     public Budget save(Budget budget) {
         return repository.save(budget);
+    }
+
+    // To update a specific budget based on its id
+    @Override
+    @Transactional
+    public Optional<Budget> update(String id, Budget budget) {
+        // Search for a specific budget 
+        Optional<Budget> optionalBudget = repository.findById(id);
+        
+        // If the budget is present then...
+        if( optionalBudget.isPresent() ) {
+            // update that record and return an optional value
+            Budget budgetDb = optionalBudget.get();
+
+            budgetDb.setAmount(budget.getAmount());
+            
+            return Optional.ofNullable(repository.save(budgetDb));
+        }
+
+        return optionalBudget;
     }
 
     // To delete information about the budget amount (the only one)

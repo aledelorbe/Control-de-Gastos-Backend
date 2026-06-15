@@ -62,31 +62,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/BudgetValidationErrors'
 
-    put:
-      tags:
-        - Budgets
-      summary: Update a budget
-      description: Updates a budget if the sent data is valid.
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/BudgetInput'
-      responses:
-        '201':
-          description: Budget successfully updated
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Budget'
-        '400':
-          description: Validation errors
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/BudgetValidationErrors'
-     
     delete:
       tags:
         - Budgets
@@ -95,6 +70,41 @@ paths:
       responses:
         '200':
           description: The budget deleted successfully
+
+  /api/budgets/{id}:
+      put:
+        tags:
+          - Budgets
+        summary: Update an existing budget
+        description: Updates all fields of a specific budget by ID.
+        parameters:
+          - name: id
+            in: path
+            required: true
+            schema:
+              type: string
+            description: Budget ID
+        requestBody:
+          required: true
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BudgetInput'
+        responses:
+          '201':
+            description: Budget updated successfully.
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Budget'
+          '400':
+            description: Validation error.
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/BudgetValidationErrors'
+          '404':
+            description: Budget not found.
 
   # Expense controller -----------------------------
 
