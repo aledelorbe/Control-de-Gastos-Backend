@@ -1,73 +1,77 @@
 package com.alejandro.controlgastos.integrations;
 
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.File;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 
-import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.ResourceUtils;
 
 import com.alejandro.controlgastos.entities.Expense;
 import com.alejandro.controlgastos.repositories.ExpenseRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.core.type.TypeReference;
 
-// To start the test context with a random port
-@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
-class ExpenseIntegrationTest {
+
+class ExpenseIntegrationTest extends AbstractMongoDbIntegrationTest {
     
     // To inject the component of testRestTemplate
     @Autowired
-    private TestRestTemplate client;
+    private TestRestTemplate testRestTemplate;
 
     @Autowired
-    private ExpenseRepository repository;
+    private ExpenseRepository expenseRepository;
 
     @Autowired
     private ObjectMapper objectMapper;
 
     private static final String BASE_URL = "/api/expenses";
 
+    private static final String PUT_DELETE_URL = BASE_URL + "/";
+
 
     // To load the data
     @BeforeEach
-    void setUp() throws IOException {
+    void setUp() throws Exception {
 
-        InputStream inputStream = getClass().getResourceAsStream("/expensesData.json");
-        List<Expense> expenses = Arrays.asList(objectMapper.readValue(inputStream, Expense[].class));
+        expenseRepository.deleteAll();
 
-        repository.saveAll(expenses);
-    }
+        File file =
+            ResourceUtils.getFile(
+                "classpath:expensesData.json"
+            );
 
-    // To reset the data at the end of each test method 
-    @AfterEach
-    void clean() {
-        repository.deleteAll();
-    }
+        List<Expense> lista =
+            objectMapper.readValue(
+                file,
+                new TypeReference<List<Expense>>() {}
+            );
 
-    // To test the endpoint getExpenses
+        expenseRepository.saveAll(lista);
+    } 
+
+    // To test the getExpenses endpoint 
     @Test
     void getExpensesIntegrationTest() {
 
         // When
-        ResponseEntity<Expense[]> response  = client.getForEntity(BASE_URL, Expense[].class);
+        ResponseEntity<Expense[]> response  = testRestTemplate.getForEntity(BASE_URL, Expense[].class);
         List<Expense> expenses = Arrays.asList(response.getBody()); 
 
         // Then
@@ -82,7 +86,7 @@ class ExpenseIntegrationTest {
 
     }
 
-    // To test the endpoint save
+    // To test the save endpoint
     @Test
     void postExpenseIntegrationTest() {
 
@@ -90,7 +94,7 @@ class ExpenseIntegrationTest {
         Expense expenseInsert = new Expense(null, " Frappe ", 50, "Diversión", LocalDateTime.of(2025, 4, 28, 18, 15));
 
         // When
-        ResponseEntity<Expense> response = client.postForEntity(BASE_URL, expenseInsert, Expense.class);
+        ResponseEntity<Expense> response = testRestTemplate.postForEntity(BASE_URL, expenseInsert, Expense.class);
         Expense newExpense = response.getBody();
 
         // Then
@@ -102,7 +106,7 @@ class ExpenseIntegrationTest {
 
     }
 
-    // To test the endpoint update when we use an existing id 
+    // To test the update endpoint when we use an existing id 
     @Test
     void putUpdateExistingIdIntegrationTest()  {
 
@@ -112,7 +116,7 @@ class ExpenseIntegrationTest {
         
         // When
         HttpEntity<Expense> request = new HttpEntity<>(expenseToUpdate);
-        ResponseEntity<Expense> response = client.exchange("/api/expenses/" + idToUpdate, HttpMethod.PUT, request, Expense.class);
+        ResponseEntity<Expense> response = testRestTemplate.exchange(PUT_DELETE_URL + idToUpdate, HttpMethod.PUT, request, Expense.class);
 
         // Then
         Expense expenseUpdate = response.getBody();
@@ -127,7 +131,7 @@ class ExpenseIntegrationTest {
 
     }
 
-    // To test the endpoint update when we use an unexisting id
+    // To test the update endpoint when we use an unexisting id
     @Test
     void putUpdateUnexistingIdIntegrationTest()  {
 
@@ -137,7 +141,7 @@ class ExpenseIntegrationTest {
         HttpEntity<Expense> request = new HttpEntity<>(expenseToUpdate);
         
         // When
-        ResponseEntity<?> response = client.exchange("/api/expenses/" + idToUpdate, HttpMethod.PUT, request, Void.class);
+        ResponseEntity<?> response = testRestTemplate.exchange(PUT_DELETE_URL + idToUpdate, HttpMethod.PUT, request, Void.class);
 
         // Then
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
@@ -145,7 +149,7 @@ class ExpenseIntegrationTest {
 
     }
 
-    // To test the endpoint delete when we use an existing id 
+    // To test the delete endpoint when we use an existing id 
     @Test
     void deleteExistingIdIntegrationTest() {
 
@@ -153,7 +157,7 @@ class ExpenseIntegrationTest {
         String idToDelete = "3000000";
         
         // When
-        ResponseEntity<Expense> response = client.exchange("/api/expenses/" + idToDelete, HttpMethod.DELETE, null, Expense.class);
+        ResponseEntity<Expense> response = testRestTemplate.exchange(PUT_DELETE_URL + idToDelete, HttpMethod.DELETE, null, Expense.class);
 
         // Then
         Expense expenseDelete = response.getBody();
@@ -166,7 +170,7 @@ class ExpenseIntegrationTest {
         assertEquals(LocalDateTime.of(2022, 2, 10, 8, 10), expenseDelete.getCreatedAt());
 
         // When
-        ResponseEntity<Expense[]> response2  = client.getForEntity(BASE_URL, Expense[].class);
+        ResponseEntity<Expense[]> response2  = testRestTemplate.getForEntity(BASE_URL, Expense[].class);
         List<Expense> expenses = Arrays.asList(response2.getBody()); 
 
         // Then
@@ -176,7 +180,7 @@ class ExpenseIntegrationTest {
         
     }
 
-    // To test the endpoint delete when we use an unexisting id
+    // To test the delete endpoint when we use an unexisting id
     @Test
     void deleteUnexistingIdIntegrationTest() {
     
@@ -184,7 +188,7 @@ class ExpenseIntegrationTest {
         String idToDelete = "999999";
         
         // When
-        ResponseEntity<?> response = client.exchange("/api/expenses/" + idToDelete, HttpMethod.DELETE, null, Void.class);
+        ResponseEntity<?> response = testRestTemplate.exchange(PUT_DELETE_URL + idToDelete, HttpMethod.DELETE, null, Void.class);
 
         // Then
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
@@ -192,19 +196,19 @@ class ExpenseIntegrationTest {
 
     }
 
-    // To test the endpoint deleteAll
+    // To test the deleteAll endpoint
     @Test
     void deleteAllIntegrationTest() {
 
         // When
-        ResponseEntity<?> response = client.exchange(BASE_URL, HttpMethod.DELETE, null, Void.class);
+        ResponseEntity<?> response = testRestTemplate.exchange(BASE_URL, HttpMethod.DELETE, null, Void.class);
 
         // Then
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNull(response.getBody());
 
         // When
-        ResponseEntity<Expense[]> response2  = client.getForEntity(BASE_URL, Expense[].class);
+        ResponseEntity<Expense[]> response2  = testRestTemplate.getForEntity(BASE_URL, Expense[].class);
         List<Expense> expenses = Arrays.asList(response2.getBody()); 
 
         // Then

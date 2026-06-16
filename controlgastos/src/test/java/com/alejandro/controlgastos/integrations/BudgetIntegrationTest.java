@@ -1,68 +1,74 @@
 package com.alejandro.controlgastos.integrations;
 
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.ResourceUtils;
 
 import com.alejandro.controlgastos.entities.Budget;
 import com.alejandro.controlgastos.repositories.BudgetRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.core.type.TypeReference;
 
-@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
-class BudgetIntegrationTest {
+
+class BudgetIntegrationTest extends AbstractMongoDbIntegrationTest {
 
     // To inject the component of testRestTemplate
     @Autowired
-    private TestRestTemplate client;
+    private TestRestTemplate testRestTemplate;
 
     @Autowired
-    private BudgetRepository repository;
+    private BudgetRepository budgetRepository;
 
     @Autowired
     private ObjectMapper objectMapper;
 
     private static final String BASE_URL = "/api/budgets";
 
+    private static final String PUT_DELETE_URL = BASE_URL + "/";
+
 
     // To load the data
     @BeforeEach
-    void setUp() throws IOException {
+    void setUp() throws Exception {
 
-        InputStream inputStream = getClass().getResourceAsStream("/budgetsData.json");
-        List<Budget> budgets = Arrays.asList(objectMapper.readValue(inputStream, Budget[].class));
+        budgetRepository.deleteAll();
 
-        repository.saveAll(budgets);
+        File file =
+            ResourceUtils.getFile(
+                "classpath:budgetsData.json"
+            );
+
+        List<Budget> lista =
+            objectMapper.readValue(
+                file,
+                new TypeReference<List<Budget>>() {}
+            );
+
+        budgetRepository.saveAll(lista);
     } 
 
-    // To reset the data at the end of each test method 
-    @AfterEach
-    void clean() {
-        repository.deleteAll();
-    }
-
-    // To test the endpoint getBudgets
+    // To test the getBudgets endpoint  
     @Test
     void getBudgetsIntegrationTest() {
 
         // When
-        ResponseEntity<Budget[]> response  = client.getForEntity(BASE_URL, Budget[].class);
+        ResponseEntity<Budget[]> response  = testRestTemplate.getForEntity(BASE_URL, Budget[].class);
         List<Budget> budgets = Arrays.asList(response.getBody()); 
 
         // Then
@@ -74,7 +80,7 @@ class BudgetIntegrationTest {
 
     }
 
-    // To test the endpoint save
+    // To test the save endpoint 
     @Test
     void postBudgetIntegrationTest() {
 
@@ -82,7 +88,7 @@ class BudgetIntegrationTest {
         Budget budgetInsert = new Budget(null, 50000);
 
         // When
-        ResponseEntity<Budget> response = client.postForEntity(BASE_URL, budgetInsert, Budget.class);
+        ResponseEntity<Budget> response = testRestTemplate.postForEntity(BASE_URL, budgetInsert, Budget.class);
         Budget newBudget = response.getBody();
 
         // Then
@@ -91,19 +97,58 @@ class BudgetIntegrationTest {
 
     }
 
-    // To test the endpoint deleteAll
+    // To test the update endpoint when we use an existing id 
+    @Test
+    void putUpdateExistingIdIntegrationTest()  {
+
+        // Given
+        String idToUpdate = "1000000";
+        Budget budgetToUpdate = new Budget(null, 12000);
+        
+        // When
+        HttpEntity<Budget> request = new HttpEntity<>(budgetToUpdate);
+        ResponseEntity<Budget> response = testRestTemplate.exchange(PUT_DELETE_URL + idToUpdate, HttpMethod.PUT, request, Budget.class);
+
+        // Then
+        Budget budgetUpdate = response.getBody();
+
+        assertEquals(HttpStatus.CREATED, response.getStatusCode());
+        assertEquals("1000000", budgetUpdate.getId());
+        assertEquals(12000, budgetUpdate.getAmount());
+
+    }
+
+    // To test the update endpoint when we use an unexisting id
+    @Test
+    void putUpdateUnexistingIdIntegrationTest()  {
+
+        // Given
+        String idToUpdate = "999999";
+        Budget budgetToUpdate = new Budget(null, 12000);
+        HttpEntity<Budget> request = new HttpEntity<>(budgetToUpdate);
+        
+        // When
+        ResponseEntity<?> response = testRestTemplate.exchange(PUT_DELETE_URL + idToUpdate, HttpMethod.PUT, request, Void.class);
+
+        // Then
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        assertNull(response.getBody());
+
+    }
+
+    // To test the deleteAllendpoint
     @Test
     void deleteAllIntegrationTest() {
 
         // When
-        ResponseEntity<?> response = client.exchange(BASE_URL, HttpMethod.DELETE, null, Void.class);
+        ResponseEntity<?> response = testRestTemplate.exchange(BASE_URL, HttpMethod.DELETE, null, Void.class);
 
         // Then
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNull(response.getBody());
 
         // When
-        ResponseEntity<Budget[]> response2  = client.getForEntity(BASE_URL, Budget[].class);
+        ResponseEntity<Budget[]> response2  = testRestTemplate.getForEntity(BASE_URL, Budget[].class);
         List<Budget> budgets = Arrays.asList(response2.getBody()); 
 
         // Then
