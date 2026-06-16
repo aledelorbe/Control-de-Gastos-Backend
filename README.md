@@ -1,6 +1,6 @@
 # Control de Gastos (Backend)
 
-Control de Gastos es un backend construido con **Spring Boot** y **MongoDB**, diseñado para gestionar un presupuesto y múltiples gastos realizados por el usuario. Este proyecto proporciona una API RESTful que permite crear, leer, actualizar y eliminar gastos, así como realizar estas mismas acciones para un único presupuesto.
+Control de Gastos es un backend construido con **Java**, **Spring Boot**, **MongoDB** y **Redis**, diseñado para gestionar un presupuesto y múltiples gastos realizados por el usuario. Este proyecto proporciona una API RESTful que permite crear, leer, actualizar y eliminar gastos, así como realizar estas mismas acciones para un único presupuesto.
 
 ## Tecnologías Utilizadas
 
@@ -10,20 +10,24 @@ Control de Gastos es un backend construido con **Spring Boot** y **MongoDB**, di
 - **Java**: Lenguaje de programación principal. Para este proyecto en específico se utilizó el `JDK 17`.
 - **Maven**: Para la gestión de dependencias y construcción del proyecto.
 - **MongoDB**: Base de datos NoSQL para almacenar las actividades.
-- **Postman**: Para simular ser un cliente que hace peticiones al servidor y probar los endpoints.
+- **Redis**: Base de datos NoSQL usada como cache.
 - **JUnit**: Framework de pruebas unitarias utilizado para verificar el correcto funcionamiento de los métodos.
 - **Mockito**: Framework de mocking usado para simular dependencias y facilitar las pruebas unitarias en aislamiento.
+- **JaCoCo**: Herramienta de análisis de cobertura de código utilizada para medir el porcentaje de código ejecutado por las pruebas y generar reportes de cobertura.
 - **Swagger / OpenAPI**: Herramienta para documentar y probar los endpoints de la API de forma interactiva.
-- **Docker**: permite ejecutar esta aplicación en un entorno aislado, sin necesidad de configurar manualmente dependencias o versiones. 
+- **Docker**: permite ejecutar esta aplicación en un entorno aislado, sin necesidad de configurar manualmente dependencias o versiones.
+- **Postman**: Para simular ser un cliente que hace peticiones al servidor y probar los endpoints.
 
 ## Características
 
-### EndPoint's
+### EndPoints
 
 Rutas organizadas para interactuar con los gastos y el presupuesto del usuario. Operaciones soportadas:
+
 - **Budget**:
   - Obtener el presupuesto.
   - Guardar el presupuesto.
+  - Actualizar el presupuesto.
   - Eliminar el presupuesto.
 - **Expenses**
   - Listar todos los gastos.
@@ -32,7 +36,9 @@ Rutas organizadas para interactuar con los gastos y el presupuesto del usuario. 
   - Actualizar gastos existentes.
   - Eliminar gastos individuales.
   - Eliminar todos los gastos.
- 
+- **ExpenseCategories**
+  - Listar todas las categorías de gastos disponibles, entre estas se incluyen: ahorro, comida, casa, diversión, salud, suscripciones, mascotas y otros.
+
 ### Gestor de base de datos
 
 - Integración con MongoDB para la manipulación de datos.
@@ -41,29 +47,44 @@ Rutas organizadas para interactuar con los gastos y el presupuesto del usuario. 
 ### Validaciones
 
 Se emplean las siguientes validaciones:
+
 - No se permite que los atributos **nombre** y **categoría** de los gastos se reciban vacíos o con puros espacios en blanco.
 - No se permite que el atributo **monto** del gasto se reciba con un valor menor o igual a cero.
 - No se permite que el atributo **monto** del presupuesto se reciba con un valor menor a 500 (valor arbitrariamente seleccionado).
 - No se permite que el atributo **fecha de creación** del presupuesto se reciba con una fecha posterior al día de hoy.
 
-### Patrones de diseño
-
-- Se emplea el patrón de diseño arquitectónico conocido como **MVC**, para separar en diferentes capas el código del proyecto.
-- El proyecto emplea **DTOs** para separar los datos expuestos en las solicitudes y respuestas del modelo de dominio, mejorando la organización y el control de la información intercambiada.
-
-### Eventos del ciclo de vida para los objetos de las clases entity
+### Eventos de ciclo de vida de objetos de las clases entity
 
 - Cada vez que se actualiza la información de algún gasto, se actualizará automáticamente el campo `updateAt` de ese mismo registro.
 
+### Patrones
+
+#### Patrón arquitectónico
+
+- **MVC**: Usado para separar en diferentes capas el código del proyecto.
+- **DTO**: Usado para transferir datos entre las diferentes capas de la aplicación sin exponer directamente las entidades del dominio.
+
+#### Patrón de caché
+
+- **Cache-Aside**: Usado para mejorar los tiempos de respuesta y reducir la carga sobre la base de datos.
+
+#### Patrón creacional
+
+- **Singleton Container**: Usado para levantar una unica instancia de los contenedores de MongoDB y Redis, los cuales son contenedores que son usados por todas las pruebas de integración, evitando levantar nuevos contenedores para cada clase de prueba.
+
+#### Patrón de resilencia
+
+- **Circuit breaker**: Usado para proteger las llamadas realizadas a Redis. Su objetivo es evitar que fallos repetidos en Redis afecten el rendimiento o la disponibilidad de la aplicación.
+
 ### Docker
 
-Este proyecto utiliza Docker para crear un entorno de ejecución aislado y reproducible, asegurando que la aplicación funcione igual en cualquier sistema. 
+Este proyecto utiliza Docker para crear un entorno de ejecución aislado y reproducible, asegurando que la aplicación funcione igual en cualquier sistema.
 
 Archivos relevantes:
 
-- `Dockerfile`: define la imagen base y cómo se construye el entorno del proyecto.
-- `docker-compose.yml`: orquesta los servicios (API y base de datos) para facilitar la ejecución local.
-- `.env`: contiene variables de entorno usadas por Docker (no se incluye en el repositorio por seguridad).
+- `Dockerfile`: Define la imagen base y cómo se construye el entorno del proyecto.
+- `docker-compose.yml`: Orquesta los servicios (aplicación, base de datos y Redis) para facilitar la ejecución local.
+- `.env`: Contiene variables de entorno usadas por Docker (no se incluyen en el repositorio por seguridad).
 
 ## Estructura del Proyecto
 
@@ -91,11 +112,17 @@ Puedes ver una demo del proyecto en el siguiente enlace: [Control de Gastos](htt
 
 ## Futuras mejoras
 
-- Desarrollar el servicio de catalogos de categoria de gastos.
-- Desarrollar las pruebas para este servicio.
-- Incorporar este servicio al swagger.
-- Meterle redis + circuit breaker.
-- Crear el perfil dev para conectarse con mongoDb atlas.
+- Cambiar de gestor de base de datos por oracle.
+- Modificar la tabla de budgets
+  - Se agregaran los siguietnes atributos: fecha_inicio (sera el valor del gasto mas antiguo de la lista), fecha_final (sera el valor del gasto mas reciente de la lista) y total_gastado.
+  - Tendra la relacion de 1 a muchos con la tabla gastos.
+  - Crear el servicio que guarde una lista de gastos, esto hara la insercion en la tabla budget junto con la insercion de la lista de gastos.
+  - Crear el servicio que liste todos los gastos con base a un id_presupuesto.
+- Agregar spring security.
+  - Usara jwt
+  - Tendra los roles de usuario y admin.
+- Crear la tabla de users.
+  - Tendra la relacion de uno a muchos con la tabla presupuesto.
 - Actualizar el readme.
 - Despliegue de la aplicacion en AWS.
 - Despligue automatico usando jenkins.
@@ -104,108 +131,146 @@ Puedes ver una demo del proyecto en el siguiente enlace: [Control de Gastos](htt
 
 # Expense Tracker (Backend)
 
-**Expense Tracker** is a backend built with **Spring Boot** and **MongoDB**, designed to manage a budget and multiple user expenses. This project provides a RESTful API that allows creating, reading, updating, and deleting expenses, as well as performing these same actions for a single budget.
+Expense Tracker is a backend application built with **Java**, **Spring Boot**, **MongoDB**, and **Redis**, designed to manage a budget and multiple user expenses. This project provides a RESTful API that allows users to create, read, update, and delete expenses, as well as perform the same operations for a single budget.
 
 ## Technologies Used
 
-- **Spring Boot**: Framework for building Java applications. This project specifically uses version `3.4.0`.
-  - **Jakarta Validation**: For input data validation.
-  - **Lifecycle Events**: A class extending `AbstractMongoEventListener` is implemented to handle actions before or after any CRUD operation performed on `Expense` objects.
-- **Java**: Main programming language. This project uses `JDK 17`.
-- **Maven**: Build and dependency management tool.
-- **MongoDB**: NoSQL database used to store the data.
-- **Postman**: Used to simulate API client requests and test endpoints.
-- **JUnit**: Unit testing framework to verify correct method behavior.
-- **Mockito**: Mocking framework to simulate dependencies and simplify isolated unit tests.
-- **Swagger / OpenAPI**: Tool for documenting and interactively testing API endpoints.
-- **Docker**: Allows running the application in an isolated environment without manually configuring dependencies or versions.
+- **Spring Boot**: Framework for building Java applications. This project uses version `3.4.0`.
+
+  - **Jakarta Validation**: Used for input data validation.
+  - **Lifecycle Events**: A class extending `AbstractMongoEventListener` is implemented to handle actions before or after CRUD operations on `Expense` objects.
+- **Java**: Main programming language. This project uses **JDK 17**.
+- **Maven**: Dependency management and project build tool.
+- **MongoDB**: NoSQL database used to store application data.
+- **Redis**: NoSQL database used as a cache layer.
+- **JUnit**: Unit testing framework used to verify the correct behavior of methods.
+- **Mockito**: Mocking framework used to simulate dependencies and facilitate isolated unit testing.
+- **JaCoCo**: Code coverage analysis tool used to measure the percentage of code executed by tests and generate coverage reports.
+- **Swagger / OpenAPI**: Tool used to document and test API endpoints interactively.
+- **Docker**: Allows the application to run in an isolated environment without manually configuring dependencies or versions.
+- **Postman**: Used to simulate client requests and test API endpoints.
 
 ## Features
 
 ### Endpoints
 
-Organized routes to interact with user expenses and budget. Supported operations:
+Organized routes for interacting with user expenses and budgets. Supported operations include:
 
 - **Budget**
   - Retrieve the budget.
-  - Save the budget.
-  - Delete the budget.
-  
+  - Save a budget.
+  - Update a budget.
+  - Delete a budget.
+
 - **Expenses**
-  - List all expenses.
-  - Retrieve a specific expense by ID.
-  - Create new expenses (requires name, amount, category, and date).
+
+  - Retrieve all expenses.
+  - Retrieve a specific expense by its ID.
+  - Create new expenses. The expense name, amount, category, and date must be provided.
   - Update existing expenses.
   - Delete individual expenses.
   - Delete all expenses.
 
-### Database Handling
+- **Expense Categories**
 
-- Integration with MongoDB for data manipulation.
-- The NoSQL database uses two collections:
-  - One for budget information.
-  - One for expense information.
+  - Retrieve all available expense categories, including: savings, food, housing, entertainment, health, subscriptions, pets, and others.
+
+### Database Management
+
+- Integration with MongoDB for data persistence and manipulation.
+- The NoSQL database contains two collections:
+
+  - One collection manages budget information.
+  - One collection manages expense information.
 
 ### Validations
 
-The following validations are applied:
+The following validations are implemented:
 
-- Expense **name** and **category** cannot be empty or contain only whitespace.
-- Expense **amount** cannot be less than or equal to zero.
-- Budget **amount** cannot be less than 500 (arbitrary business rule).
-- Budget **creation date** cannot be a future date.
-
-### Design Patterns
-
-- Architectural pattern **MVC** to separate application logic into layers.
-- Use of **DTOs** to separate request/response data from domain models, improving structure and data control.
+- Expense **name** and **category** cannot be null, empty, or contain only blank spaces.
+- The **amount** attribute of an expense cannot be less than or equal to zero.
+- The **amount** attribute of a budget cannot be less than 500 (an arbitrarily selected value).
+- The **budget creation date** cannot be later than the current date.
 
 ### Entity Lifecycle Events
 
-- Every time an expense is updated, its `updatedAt` field is automatically refreshed.
+- Whenever an expense is updated, the `updatedAt` field is automatically updated for that record.
+
+### Design Patterns
+
+#### Architectural Patterns
+
+- **MVC (Model-View-Controller)**: Used to separate the project into different layers.
+- **DTO (Data Transfer Object)**: Used to transfer data between application layers without exposing domain entities directly.
+
+#### Caching Pattern
+
+- **Cache-Aside**: Used to improve response times and reduce database load.
+
+#### Creational Pattern
+
+- **Singleton Container**: Used to create a single instance of MongoDB and Redis containers, which are shared across all integration tests, avoiding the overhead of creating new containers for each test class.
+
+#### Resilience Pattern
+
+- **Circuit Breaker**: Used to protect Redis calls. Its purpose is to prevent repeated Redis failures from affecting application performance or availability.
 
 ### Docker
 
-This project uses Docker to create a reproducible, isolated runtime environment, ensuring consistent behavior across systems.
+This project uses Docker to create an isolated and reproducible execution environment, ensuring the application behaves consistently across different systems.
 
 Relevant files:
 
-- `Dockerfile`: Defines the base image and build instructions for the project environment.
-- `docker-compose.yml`: Orchestrates services (API and database) for easier local execution.
+- `Dockerfile`: Defines the base image and how the project environment is built.
+- `docker-compose.yml`: Orchestrates services (application, database, and Redis) to simplify local execution.
 - `.env`: Contains environment variables used by Docker (not included in the repository for security reasons).
 
 ## Project Structure
 
 ### Application Source Code
 
-- `controllers/`: Contains classes that handle HTTP requests and define API endpoints.
-- `services/`: Contains classes with business logic.
-- `repositories/`: Contains interfaces extending Spring Data components for data handling.
-- `entities/`: Contains classes mapped to their respective MongoDB collections.
-- `events/`: Contains classes that handle pre- and post-CRUD logic.
+- `controllers/`: Contains classes responsible for handling HTTP requests and defining API endpoints.
+- `services/`: Contains classes responsible for business logic.
+- `repositories/`: Contains interfaces that provide data access functionality.
+- `entities/`: Contains classes mapped to their corresponding database collections.
+- `events/`: Contains classes that handle actions before or after CRUD operations.
 
 ### Test Code
 
-- `controllers/`: Contains tests validating controller behavior.
-- `services/`: Includes tests for service-layer logic.
-- `data/`: Contains mock data classes used during testing.
-- `integrations/`: Contains integration tests validating full controller behavior.
-- `resources/`: Stores JSON files used as test input for integration tests.
+- `controllers/`: Contains test classes that validate controller behavior.
+- `services/`: Contains test classes that verify service-layer functionality.
+- `data/`: Stores mock data used during test execution.
+- `integrations/`: Contains integration tests that validate complete controller behavior.
+- `resources/`: Stores JSON files used as input data for integration tests.
 
 ## Demo
 
-You can view a live demo of the project here:  
-**[Expense Tracker Demo](https://serene-frangollo-9ddb20.netlify.app/)**
+You can view a demo of the project at the following link:
 
-**Note:** The demo is for display purposes only. It is **not** connected to the backend.
+- Expense Tracker: https://serene-frangollo-9ddb20.netlify.app/
+
+**Note:** The demo is for demonstration purposes only and is not connected to the backend.
 
 ## Future Improvements
 
-- Develop a category catalog service.
-- Add tests for this new service.
-- Add this service to Swagger documentation.
-- Create the dev profile to connect to MongoDB Atlas.
-- Possibly integrate Redis and implement the **Cache-aside pattern** to cache the catalog.
+- Replace the current database management system with Oracle.
+- Modify the budgets table.
+
+  - Add the following attributes:
+
+    - `start_date` (the oldest expense date in the expense list).
+    - `end_date` (the most recent expense date in the expense list).
+    - `total_spent`.
+  - Establish a one-to-many relationship with the expenses table.
+  - Create a service that saves a list of expenses. This service will insert a budget record along with the associated expense records.
+  - Create a service that retrieves all expenses based on a `budget_id`.
+- Add Spring Security.
+
+  - Use JWT authentication.
+  - Support `USER` and `ADMIN` roles.
+- Create a users table.
+
+  - Establish a one-to-many relationship with the budgets table.
 - Update the README.
-- Deploy the application on AWS.
+- Deploy the application to AWS.
 - Implement automated deployment using Jenkins.
